@@ -1,1 +1,5 @@
 .DS_Store
+dist/
+__pycache__/
+images/IMG_4959.png
+images/IMG_4959_cropped.png

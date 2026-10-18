@@ -1,0 +1,717 @@
+{
+  "profile": {
+    "name": "Sweta Karlekar",
+    "role": "Ph.D. student in Computer Science",
+    "university": "Columbia University",
+    "advisor": "David Blei",
+    "advisor_url": "https://www.cs.columbia.edu/~blei/",
+    "email": "sweta.karlekar@hotmail.com",
+    "twitter_url": "https://x.com/SwetaKarlekar",
+    "cv_url": "/files/Karlekar_Sweta_research_CV_2026_fall.pdf",
+    "interests": [
+      "Natural language processing",
+      "Mechanistic interpretability",
+      "Probabilistic modeling"
+    ]
+  },
+  "selected_publications": [
+    "care",
+    "duel-evolve",
+    "mechanistic-topic-models",
+    "hallucination-rate"
+  ],
+  "publications": [
+    {
+      "id": "care",
+      "year": 2026,
+      "title": "Do You CARE to Generalize? Extracting Robust Concept Directions from LLMs",
+      "authors": [
+        "Sweta Karlekar",
+        "Claudia Shi",
+        "Aahlad Manas Puli",
+        "Carolina Zheng",
+        "Maggie Makar",
+        "John Bowlan",
+        "Michal Kucer",
+        "David Blei"
+      ],
+      "venue": "NeurIPS 2026",
+      "presentation": "Poster",
+      "publication_note": "Accepted; forthcoming",
+      "abstract": "Transformer-based large language models (LLMs) encode many high-level concepts as linear directions in the latent activation space. Once identified, these directions support both measurement, the quantification of a concept's presence, and intervention, the steering of the model's behavior. In practice, however, a direction learned from one context often fails when applied to prompts from a new context. This poor transfer can have two distinct sources: spurious correlation between the concept label and dataset-specific features, and genuine heterogeneity in how the concept is encoded across contexts. Methods from out-of-distribution (OOD) literature can address the first, but worsen the second by discarding context-specific structure that may carry concept signal. We introduce Context-Aided Representation Extraction (CARE), which bridges OOD generalization and mechanistic interpretability. Given activations labeled with a concept and an environment, CARE jointly learns a shared direction, optimized to be invariant across environments, and orthogonal environment-specific residuals that capture how the concept varies by context. We evaluate CARE on subject--verb agreement, refusal of harmful prompts, and toxicity. CARE produces directions that measure concepts more reliably under distribution shift and in unseen environments and datasets than existing methods while remaining effective for intervention. Its decomposition also supports a swap-cost diagnostic that identifies when context-specific structure carries concept-relevant signal.",
+      "links": [],
+      "abstract_source": "Provided by the author"
+    },
+    {
+      "id": "duel-evolve",
+      "year": 2026,
+      "title": "Duel-Evolve: Reward-Free Test-Time Scaling via LLM Self-Preferences",
+      "authors": [
+        "Sweta Karlekar",
+        "Carolina Zheng",
+        "Magnus Saebo",
+        "Nicolas Beltran-Velez",
+        "Shuyang Yu",
+        "John Bowlan",
+        "Michal Kucer",
+        "David Blei"
+      ],
+      "equal_contribution": [
+        "Sweta Karlekar",
+        "Carolina Zheng",
+        "Magnus Saebo"
+      ],
+      "venue": "ICLR 2026 · Workshop on Recursive Self Improvement (RSI)",
+      "presentation": "Poster",
+      "citation_type": "inproceedings",
+      "bibliography_venue": "ICLR 2026 Workshop on Recursive Self Improvement (RSI)",
+      "arxiv_id": "2602.21585",
+      "abstract": "Many applications seek to optimize LLM outputs at test time by iteratively proposing, scoring, and refining candidates over a discrete output space. Existing methods use a calibrated scalar evaluator for the target objective to guide search, but for many tasks such scores are unavailable, too sparse, or unreliable. Pairwise comparisons, by contrast, are often easier to elicit, still provide useful signal on improvement directions, and can be obtained from the LLM itself without external supervision. Building on this observation, we introduce Duel-Evolve, an evolutionary optimization algorithm that replaces external scalar rewards with pairwise preferences elicited from the same LLM used to generate candidates. Duel-Evolve aggregates these noisy candidate comparisons via a Bayesian Bradley–Terry model, yielding uncertainty-aware estimates of candidate quality. These quality estimates guide allocation of the comparison budget toward plausible optima using Double Thompson Sampling, as well as selection of high-quality parents to generate improved candidates. We evaluate Duel-Evolve on MathBench, where it achieves 20 percentage points higher accuracy over existing methods and baselines, and on LiveCodeBench, where it improves over comparable iterative methods by over 12 percentage points. Notably, the method requires no reward model, no ground-truth labels during search, and no hand-crafted scoring function. Results show that pairwise self-preferences provide strong optimization signal for test-time improvement over large, discrete output spaces.",
+      "links": [
+        {
+          "label": "Paper",
+          "url": "https://arxiv.org/abs/2602.21585"
+        },
+        {
+          "label": "PDF",
+          "url": "https://arxiv.org/pdf/2602.21585"
+        },
+        {
+          "label": "Slides",
+          "url": "/files/duel_evolve_presentation.pdf"
+        }
+      ],
+      "abstract_source_url": "https://arxiv.org/html/2602.21585v1"
+    },
+    {
+      "id": "robust-representations",
+      "year": 2026,
+      "title": "Extracting Representations in LLMs Robust to Distribution Shifts",
+      "authors": [
+        "Sweta Karlekar",
+        "Claudia Shi",
+        "Aahlad Manas Puli",
+        "Carolina Zheng",
+        "Maggie Makar",
+        "John Bowlan",
+        "Michal Kucer",
+        "David M. Blei"
+      ],
+      "equal_contribution": [
+        "Sweta Karlekar",
+        "Claudia Shi"
+      ],
+      "venue": "ICLR 2026 · Workshop on Unifying Concept Representation Learning (UCRL)",
+      "presentation": "Poster",
+      "bibliography_venue": "ICLR 2026 Workshop on Unifying Concept Representation Learning (UCRL)",
+      "abstract": "Transformer-based large language models (LLMs) encode many high-level concepts as linear directions in the latent activation space. Isolating such concept directions enables both the measurement of said concepts and interventions to modify them. Directions extracted from one dataset, however, often fail to generalize to new contexts or environments. We introduce Context-Aided Representation Extraction (CARE), a method that decomposes concept representations into two complementary components: (1) an invariant direction capturing shared aspects of the concept across environments, and (2) environment-specific directions capturing contextual variations. We evaluate CARE on subject-verb agreement and harmful prompt detection across datasets with varying degrees of induced correlation between concept labels and environmental attributes. Our results demonstrate that CARE achieves robust performance on both measurement and intervention under distribution shift. A fitted CARE model reveals whether concepts admit unified representations or require multiple directions to fully capture their structure. With this, CARE provides insight into the complexity of how concepts are encoded in language models and provides measurement and intervention strategies that are robust to distribution shift.",
+      "links": [
+        {
+          "label": "Paper",
+          "url": "https://openreview.net/forum?id=KzH1cLVU1R"
+        },
+        {
+          "label": "PDF",
+          "url": "https://openreview.net/pdf?id=KzH1cLVU1R"
+        }
+      ],
+      "abstract_source_url": "https://openreview.net/pdf?id=KzH1cLVU1R"
+    },
+    {
+      "id": "mechanistic-topic-models",
+      "year": 2026,
+      "title": "Model Directions, Not Words: Mechanistic Topic Models Using Sparse Autoencoders",
+      "authors": [
+        "Carolina Zheng",
+        "Nicolas Beltran-Velez",
+        "Sweta Karlekar",
+        "Claudia Shi",
+        "Achille Nazaret",
+        "Asif Mallik",
+        "Amir Feder",
+        "David M. Blei"
+      ],
+      "equal_contribution": [
+        "Carolina Zheng",
+        "Nicolas Beltran-Velez",
+        "Sweta Karlekar"
+      ],
+      "venue": "TACL 2026",
+      "presentation": "Poster",
+      "presentation_venue": "EMNLP 2026",
+      "citation_type": "article",
+      "bibliography_venue": "Transactions of the Association for Computational Linguistics",
+      "arxiv_id": "2507.23220",
+      "publication_note": "Presented at EMNLP 2026",
+      "abstract": "Traditional topic models are effective at uncovering latent themes in large text collections. However, due to their reliance on bag-of-words representations, they struggle to capture semantically abstract features. While some neural variants use richer representations, they are similarly constrained by expressing topics as word lists, which limits their ability to articulate complex topics. We introduce Mechanistic Topic Models (MTMs), a class of topic models that operate on interpretable features learned by sparse autoencoders (SAEs). By defining topics over this semantically rich space, MTMs can reveal deeper conceptual themes with expressive feature descriptions. Moreover, uniquely among topic models, MTMs enable controllable text generation using topic steering vectors. To properly evaluate MTM topics against word list approaches, we propose topic judge, an LLM-based pairwise comparison evaluation framework. Across eight datasets, MTMs match or exceed traditional and neural baselines on coherence metrics, are consistently preferred by topic judge, and enable effective LLM steering.11 1 github.com/blei-lab/mechanistic-topic-models",
+      "links": [
+        {
+          "label": "Paper",
+          "url": "https://arxiv.org/abs/2507.23220"
+        },
+        {
+          "label": "PDF",
+          "url": "https://arxiv.org/pdf/2507.23220"
+        },
+        {
+          "label": "Poster",
+          "url": "/files/emnlp_mtm_poster.png"
+        }
+      ],
+      "abstract_source_url": "https://arxiv.org/html/2507.23220v3"
+    },
+    {
+      "id": "hallucination-rate",
+      "year": 2024,
+      "title": "Estimating the Hallucination Rate of Generative AI",
+      "authors": [
+        "Andrew Jesson",
+        "Nicolas Beltran-Velez",
+        "Quentin Chu",
+        "Sweta Karlekar",
+        "Jannik Kossen",
+        "Yarin Gal",
+        "John P. Cunningham",
+        "David Blei"
+      ],
+      "venue": "NeurIPS 2024",
+      "presentation": "Poster",
+      "abstract": "This paper presents a method for estimating the hallucination rate for in-context learning (ICL) with generative AI. In ICL, a conditional generative model (CGM) is prompted with a dataset and a prediction question and asked to generate a response. One interpretation of ICL assumes that the CGM computes the posterior predictive of an unknown Bayesian model, which implicitly defines a joint distribution over observable datasets and latent mechanisms. This joint distribution factorizes into two components: the model prior over mechanisms and the model likelihood of datasets given a mechanism. With this perspective, we define a hallucination as a generated response to the prediction question with low model likelihood given the mechanism. We develop a new method that takes an ICL problem and estimates the probability that a CGM will generate a hallucination. Our method only requires generating prediction questions and responses from the CGM and evaluating its response log probability. We empirically evaluate our method using large language models for synthetic regression and natural language ICL tasks.",
+      "links": [
+        {
+          "label": "Paper",
+          "url": "https://proceedings.neurips.cc/paper_files/paper/2024/hash/3791f5fc0e8e43730466afd2bcdb7493-Abstract-Conference.html"
+        },
+        {
+          "label": "PDF",
+          "url": "https://proceedings.neurips.cc/paper_files/paper/2024/file/3791f5fc0e8e43730466afd2bcdb7493-Paper-Conference.pdf"
+        }
+      ],
+      "abstract_source_url": "https://proceedings.neurips.cc/paper_files/paper/2024/hash/3791f5fc0e8e43730466afd2bcdb7493-Abstract-Conference.html"
+    },
+    {
+      "id": "safecity",
+      "year": 2018,
+      "title": "SafeCity: Understanding Diverse Forms of Sexual Harassment Personal Stories",
+      "authors": [
+        "Sweta Karlekar",
+        "Mohit Bansal"
+      ],
+      "venue": "EMNLP 2018",
+      "presentation": "Oral",
+      "abstract": "With the recent rise of #MeToo, an increasing number of personal stories about sexual harassment and sexual abuse have been shared online. In order to push forward the fight against such harassment and abuse, we present the task of automatically categorizing and analyzing various forms of sexual harassment, based on stories shared on the online forum SafeCity. For the labels of groping, ogling, and commenting, our single-label CNN-RNN model achieves an accuracy of 86.5%, and our multi-label model achieves a Hamming score of 82.5%. Furthermore, we present analysis using LIME, first-derivative saliency heatmaps, activation clustering, and embedding visualization to interpret neural model predictions and demonstrate how this helps extract features that can help automatically fill out incident reports, identify unsafe areas, avoid unsafe practices, and ‘pin the creeps’.",
+      "links": [
+        {
+          "label": "Paper",
+          "url": "https://arxiv.org/pdf/1809.04739.pdf"
+        },
+        {
+          "label": "Oral presentation",
+          "url": "https://vimeo.com/305891772"
+        },
+        {
+          "label": "Dataset and data splits",
+          "url": "https://github.com/swkarlekar/safecity"
+        }
+      ],
+      "abstract_source_url": "https://aclanthology.org/D18-1303/"
+    },
+    {
+      "id": "alzheimers-language",
+      "year": 2018,
+      "title": "Detecting Linguistic Characteristics of Alzheimer’s Dementia by Interpreting Neural Models",
+      "authors": [
+        "Sweta Karlekar",
+        "Tong Niu",
+        "Mohit Bansal"
+      ],
+      "venue": "NAACL 2018",
+      "presentation": "Poster",
+      "abstract": "Alzheimer’s disease (AD) is an irreversible and progressive brain disease that can be stopped or slowed down with medical treatment. Language changes serve as a sign that a patient’s cognitive functions have been impacted, potentially leading to early diagnosis. In this work, we use NLP techniques to classify and analyze the linguistic characteristics of AD patients using the DementiaBank dataset. We apply three neural models based on CNNs, LSTM-RNNs, and their combination, to distinguish between language samples from AD and control patients. We achieve a new independent benchmark accuracy for the AD classification task. More importantly, we next interpret what these neural models have learned about the linguistic characteristics of AD patients, via analysis based on activation clustering and first-derivative saliency techniques. We then perform novel automatic pattern discovery inside activation clusters, and consolidate AD patients’ distinctive grammar patterns. Additionally, we show that first derivative saliency can not only rediscover previous language patterns of AD patients, but also shed light on the limitations of neural models. Lastly, we also include analysis of gender-separated AD data.",
+      "links": [
+        {
+          "label": "Paper",
+          "url": "https://arxiv.org/pdf/1804.06440.pdf"
+        },
+        {
+          "label": "Poster",
+          "url": "/files/naacl_dementia_poster.pdf"
+        },
+        {
+          "label": "Research symposium presentation",
+          "url": "/files/Alzheimers_Research_Presentation.pdf"
+        }
+      ],
+      "abstract_source_url": "https://aclanthology.org/N18-2110/"
+    },
+    {
+      "id": "metoo-abuse-stories",
+      "year": 2018,
+      "title": "#MeToo: Neural Detection and Explanation of Language in Personal Abuse Stories",
+      "authors": [
+        "Sweta Karlekar",
+        "Mohit Bansal"
+      ],
+      "venue": "NAACL WiNLP 2018",
+      "presentation": "Poster",
+      "abstract": "The detection and classification of domestic abuse stories shared online has ever-increasing importance in today’s social activism sphere. With massive numbers of stories shared, automatic detection can aggregate stories from around the internet and help push forward the fight against domestic abuse from a social campaign to social change. We develop CNN, LSTM-RNN, and CNN-LSTM neural models to detect domestic abuse stories in the Reddit Domestic Abuse dataset. We achieved 95.8% accuracy in classifying posts as containing abuse stories versus not containing abuse stories, outperforming the current state-of-the-art. More importantly, we next present sentiment-only classification feasibility as well as interpretable and explainable analysis of the neural model’s predictions using activation clustering techniques to automatically discover linguistic features.",
+      "links": [
+        {
+          "label": "Paper",
+          "url": "https://www.cs.unc.edu/~mbansal/papers/winlp2018-karlekar-bansal.pdf"
+        },
+        {
+          "label": "Poster",
+          "url": "/files/naacl_winlp_poster.pdf"
+        }
+      ],
+      "abstract_source_url": "https://www.cs.unc.edu/~mbansal/papers/winlp2018-karlekar-bansal.pdf"
+    },
+    {
+      "id": "multispectral-tree-masking",
+      "year": 2015,
+      "title": "Developing a Method to Mask Trees in Commercial Multispectral Imagery",
+      "authors": [
+        "S. J. Becker",
+        "C. S. T. Daughtry",
+        "D. Jain",
+        "S. S. Karlekar"
+      ],
+      "venue": "American Geophysical Union Fall Meeting 2015",
+      "presentation": "Poster",
+      "abstract": "The US Army has an increasing focus on using automated remote sensing techniques with commercial multispectral imagery (MSI) to map urban and peri-urban agricultural and vegetative features; however, similar spectral profiles between trees (i.e., forest canopy) and other vegetation result in confusion between these cover classes. Established vegetation indices, like the Normalized Difference Vegetation Index (NDVI), are typically not effective in reliably differentiating between trees and other vegetation. Previous research in tree mapping has included integration of hyperspectral imagery (HSI) and LiDAR for tree detection and species identification, as well as the use of MSI to distinguish tree crowns from non-vegetated features. This project developed a straightforward method to model and also mask out trees from eight-band WorldView-2 (1.85 meter x 1.85 meter resolution at nadir) satellite imagery at the Beltsville Agricultural Research Center in Beltsville, MD spanning 2012 - 2015. The study site included tree cover, a range of agricultural and vegetative cover types, and urban features. The modeling method exploits the product of the red and red edge bands and defines accurate thresholds between trees and other land covers. Results show this method outperforms established vegetation indices including the NDVI, Soil Adjusted Vegetation Index, Normalized Difference Water Index, Simple Ratio, and Normalized Difference Red Edge Index in correctly masking trees while preserving the other information in the imagery. This method is useful when HSI and LiDAR collection are not possible or when using archived MSI.",
+      "links": [
+        {
+          "label": "Abstract",
+          "url": "http://adsabs.harvard.edu/abs/2015AGUFM.B43C0569B"
+        }
+      ],
+      "abstract_source_url": "https://studio.m-anage.com/agu/fm15/webprogram/Paper82670.html"
+    }
+  ],
+  "projects": [
+    {
+      "id": "text-based-interventions",
+      "title": "Examining the Structure of Text-Based Interventions in Large Language Models",
+      "summary": "Investigates how language-model activations change between concepts and their counterfactuals. The project compares constant, linear, and nonlinear relationships between activation vectors to examine the linear representation hypothesis and the structure of activation steering.",
+      "context": "Sweta Karlekar, Gabriel Chuang, and Claudia Shi · Columbia University Computer Science",
+      "links": [
+        {
+          "label": "Slides",
+          "url": "/files/final_presentation_linearity_hypothesis.pdf"
+        }
+      ]
+    },
+    {
+      "id": "climate-illness-outbreaks",
+      "title": "Modeling the Projected Effect of Climate Change on the Prevalence of Food and Waterborne Illness Outbreaks",
+      "summary": "Combines climate projections and probabilistic models within a causal-inference framework to explore food and waterborne illness outbreaks under different climate scenarios. The project compares outbreak models, examines uncertainty, and discusses limitations in data and causal assumptions.",
+      "context": "Nicolas Beltran and Sweta Karlekar · Columbia University Computer Science",
+      "links": [
+        {
+          "label": "Poster",
+          "url": "/files/final_poster_to_print.pdf"
+        },
+        {
+          "label": "Code",
+          "url": "https://github.com/blei-lab/foodborne-causal-inference/"
+        }
+      ]
+    },
+    {
+      "id": "classroom-interaction-patterns",
+      "title": "Exploring a Flexible Computational Method for Comparing Massive Interaction Data from Science Visualizations",
+      "summary": "Developed a flexible method for comparing interaction logs from science visualizations using integer encoding and Levenshtein distance, identifying patterns across student knowledge groups to inform future personalized feedback.",
+      "context": "Sweta Karlekar · UNC Chapel Hill School of Education",
+      "credits": "Faculty advisor: Kelly Ryoo. Graduate student mentors: Emily Toutkoushian and Amanda Swearingen.",
+      "links": [
+        {
+          "label": "Poster",
+          "url": "/files/nsf_making_science_visible_poster.pdf"
+        }
+      ]
+    }
+  ],
+  "talks": [
+    {
+      "id": "many-shot-jailbreaking",
+      "title": "A Mechanistic Interpretability Lens on Many Shot Jailbreaking",
+      "summary": "Presented for LLM Interpretability and Alignment. Explores hypotheses about many-shot jailbreaking through in-context learning, refusal directions, and persona shifts, connecting interpretability research with proposed experiments.",
+      "links": [
+        {
+          "label": "View slides",
+          "url": "/files/mech_interp_lens_msj.pdf"
+        }
+      ]
+    },
+    {
+      "id": "transformer-circuits-framework",
+      "title": "“A Mathematical Framework for Transformer Circuits” (Elhage et al., 2021)",
+      "summary": [
+        "Presented by me and ",
+        {
+          "text": "Nicolas Beltran-Velez",
+          "url": "https://www.linkedin.com/in/nicolas-beltran-velez-1950141a9/"
+        },
+        " for a class on the Theoretical Foundations of LLMs, covering ",
+        {
+          "text": "“A Mathematical Framework for Transformer Circuits” (Elhage et al., 2021)",
+          "url": "https://transformer-circuits.pub/2021/framework/index.html"
+        },
+        ". Introduces the circuit view of transformers through residual streams, attention-head computations, induction heads, and circuit ablation."
+      ],
+      "links": [
+        {
+          "label": "View slides",
+          "url": "/files/math_framework_for_transformers.pdf"
+        }
+      ]
+    },
+    {
+      "id": "intro-mechanistic-interpretability",
+      "title": "Intro to Mechanistic Interpretability",
+      "summary": [
+        "Presented in the Frontiers of Machine Learning class while I was a teaching assistant, and as a guest lecture for the ",
+        {
+          "text": "Columbia AI Alignment Club",
+          "url": "https://www.cualignment.org/"
+        },
+        "."
+      ],
+      "links": [
+        {
+          "label": "View slides",
+          "url": "/files/intro_to_mech_interp.pdf"
+        }
+      ]
+    }
+  ],
+  "education": [
+    {
+      "dates": "2023–present",
+      "institution": "Columbia University",
+      "degree": "Ph.D. in Computer Science",
+      "detail": "Advised by David Blei. Research in natural language processing, mechanistic interpretability, and probabilistic modeling."
+    },
+    {
+      "dates": "2023–2026",
+      "institution": "Columbia University",
+      "degree": "M.S. in Computer Science"
+    },
+    {
+      "dates": "2016–2020",
+      "institution": "University of North Carolina at Chapel Hill",
+      "degree": "B.S. in Computer Science; minor in Entrepreneurship",
+      "detail": "Research advisor: Mohit Bansal. Phi Beta Kappa, Sigma Xi, and Honors Carolina."
+    }
+  ],
+  "experience": [
+    {
+      "dates": "March 2025–present",
+      "organization": "Los Alamos National Laboratory (LANL)",
+      "role": "Graduate Student Researcher",
+      "detail": "Working on improving LLM performance and alignment through a variety of projects in collaboration with LANL scientists and mentors."
+    },
+    {
+      "dates": "May–August 2024",
+      "organization": "Capital One",
+      "role": "Machine Learning Data Science Ph.D. Intern",
+      "detail": "Evaluated text encoders for call-transcript summarization and similarity search, and developed an evaluation framework with Kubeflow Pipelines."
+    },
+    {
+      "dates": "October 2020–July 2023",
+      "organization": "Meta",
+      "role": "Applied ML Research Engineer",
+      "detail": "Worked on generative AI safety, Bayesian modeling, and causal inference; led engineering projects and mentored research interns."
+    },
+    {
+      "dates": "January–May 2019",
+      "organization": "Yelp",
+      "role": "Applied Machine Learning Intern",
+      "detail": "Developed recurrent survival models and advertiser-signal features to study business and advertiser retention."
+    },
+    {
+      "dates": "September 2018–September 2019",
+      "organization": "Google AI Research Mentoring Program",
+      "role": "Research Mentee",
+      "detail": "Nominated through WiNLP and mentored by Been Kim on interpretability and democratizing deep learning models."
+    },
+    {
+      "dates": "August–December 2018",
+      "organization": "The Walt Disney Company",
+      "role": "Emerging Technologies Intern",
+      "detail": "Worked on extracting themes from SMS data, automating responses, and applying machine learning to audience analysis."
+    },
+    {
+      "dates": "May–August 2018",
+      "organization": "MITRE Corporation",
+      "role": "Deep Learning and AI Intern",
+      "detail": "Explored generative adversarial networks for satellite-image training data and reviewed neural computer-vision methods."
+    },
+    {
+      "dates": "August 2017–May 2018",
+      "organization": "University of North Carolina at Chapel Hill",
+      "role": "Research Assistant",
+      "detail": "Conducted deep learning and natural-language-processing research with Mohit Bansal, including language analysis and interpretation of neural classifiers."
+    }
+  ],
+  "teaching": [
+    {
+      "dates": "Fall 2024",
+      "organization": "Columbia University",
+      "role": "Teaching Assistant",
+      "detail": "Frontiers of Machine Learning (COMS 6998), taught by Carl Vondrick."
+    }
+  ],
+  "service": [
+    {
+      "dates": "June–November 2020",
+      "organization": "Bluebonnet Data",
+      "role": "Data Science Fellow",
+      "detail": "Volunteered as a data scientist supporting state-level Democratic campaigns."
+    },
+    {
+      "dates": "August 2018–August 2019",
+      "organization": "Rewriting the Code",
+      "role": "Co-Leader, Tech for Social Good Affinity Group",
+      "detail": "Organized webinars and programs, mentored peers, and shared resources to encourage socially useful technology."
+    },
+    {
+      "dates": "January–May 2018",
+      "organization": "Chancellor’s Science Scholars",
+      "role": "Outreach and Community Service Chair",
+      "detail": "Coordinated community service activities for the Chancellor’s Science Scholars program."
+    },
+    {
+      "dates": "August 2016–May 2018",
+      "organization": "Outreach360",
+      "role": "Mentor",
+      "detail": "Tutored and mentored Burmese refugees in math and English in the Chapel Hill and Carrboro area."
+    },
+    {
+      "dates": "February 2014–August 2017",
+      "organization": "Club Luminous",
+      "role": "Founder and President",
+      "detail": "Founded and led a community outreach program introducing elementary and middle school students to STEM."
+    },
+    {
+      "dates": "October 2016–May 2017",
+      "organization": "University of North Carolina at Chapel Hill",
+      "role": "Executive Board, Maker-in-Residence Committee",
+      "detail": "Organized maker projects and year-long capstone builds with the UNC Makerspace."
+    }
+  ],
+  "honors": [
+    {
+      "date": "2026",
+      "title": "Columbia AI Ethics Fellowship",
+      "id": "columbia-ai-ethics",
+      "kind": "fellowship",
+      "url": "https://www.mhe.cuimc.columbia.edu/news/call-applications-division-ethics-ai-fellows-fall-2026",
+      "detail": "Fall 2026 cohort · Division of Ethics, Columbia University."
+    },
+    {
+      "date": "2025",
+      "title": "National Defense Science and Engineering Graduate Fellowship",
+      "id": "ndseg",
+      "kind": "fellowship",
+      "url": "https://ndseg.sysplus.com/NDSEG/About/",
+      "detail": "Three-year NDSEG fellowship."
+    },
+    {
+      "date": "2023",
+      "title": "Columbia Provost Doctoral Fellowship",
+      "id": "provost-doctoral",
+      "kind": "fellowship",
+      "url": "https://provost.columbia.edu/content/provost-doctoral-fellowship-program",
+      "detail": "Columbia University."
+    },
+    {
+      "date": "2020",
+      "title": "CRA Outstanding Undergraduate Researcher Award Runner-Up",
+      "detail": "Computing Research Association."
+    },
+    {
+      "date": "",
+      "title": "Neo Scholar",
+      "detail": "Mentorship community for entrepreneurship."
+    },
+    {
+      "date": "",
+      "title": "Distinguished Scholar",
+      "detail": "Chancellor’s Science Scholarship Program."
+    },
+    {
+      "date": "2019",
+      "title": "Ernest H. Abernethy Prize for Student Publication",
+      "detail": "Chancellor’s Award."
+    },
+    {
+      "date": "2019",
+      "title": "Phi Beta Kappa Honor Society",
+      "detail": "Inducted in April 2019."
+    },
+    {
+      "date": "2018",
+      "title": "EMNLP Student Scholarship",
+      "detail": "Conference scholarship."
+    },
+    {
+      "date": "",
+      "title": "Moogfest Young Engineers Scholarship",
+      "detail": ""
+    },
+    {
+      "date": "2018",
+      "title": "Grace Hopper UNC Chapel Hill Scholarship",
+      "detail": ""
+    },
+    {
+      "date": "2017",
+      "title": "1st Place Math and Computer Science Poster",
+      "detail": "National Sigma Xi Research Conference, undergraduate division."
+    },
+    {
+      "date": "2016",
+      "title": "STEM Diversity Scholarship",
+      "detail": "Full scholarship awarded for academic merit."
+    },
+    {
+      "date": "2016",
+      "title": "Chancellor’s Science Scholars Scholarship",
+      "detail": "$10,000 per year, awarded for academic merit."
+    },
+    {
+      "date": "",
+      "title": "Rewriting the Code Fellow",
+      "detail": "Women in computer science."
+    },
+    {
+      "date": "",
+      "title": "Dean’s List for All Semesters",
+      "detail": "University of North Carolina at Chapel Hill."
+    },
+    {
+      "date": "",
+      "title": "National Merit Scholarship Finalist",
+      "detail": ""
+    },
+    {
+      "date": "",
+      "title": "National AP Scholar Award",
+      "detail": ""
+    },
+    {
+      "date": "",
+      "title": "Best Design for Mobile Application",
+      "detail": "HackTJ Hackathon."
+    }
+  ],
+  "features": [
+    {
+      "title": "Senior Profile by UNC-CH and UNC School of Arts and Sciences",
+      "url": "https://www.unc.edu/discover/sweta-karlekar/"
+    },
+    {
+      "title": "Recognized by UNC-CH Computer Science for Undergraduate Research",
+      "url": "https://cs.unc.edu/news/karlekar-guo-recognized-by-cra-for-excellence-in-undergraduate-research/"
+    },
+    {
+      "title": "CRA Outstanding Undergraduate Researcher Award Runner-Up",
+      "url": "https://cra.org/about/awards/outstanding-undergraduate-researcher-award/"
+    },
+    {
+      "title": "Top Paper Picks in Sebastian Ruder’s NLP Newsletter",
+      "url": "http://newsletter.ruder.io/issues/nlp-pytorch-libraries-gan-tutorial-jupyter-tricks-tensorflow-things-representation-learning-making-nlp-more-accessible-michael-jordan-essay-reproducing-deep-rl-rakuten-data-challenge-naacl-outstanding-papers-106347"
+    },
+    {
+      "title": "Work Featured in Towards Data Science and Democratizing Artificial Intelligence Research",
+      "url": "https://towardsdatascience.com/using-nlp-to-detect-linguistic-cues-in-alzheimers-diseases-patients-3364301b0299"
+    },
+    {
+      "title": "Featured and Interviewed by UNC Chapel Hill Admissions",
+      "url": "/files/admit_brochure.pdf"
+    },
+    {
+      "title": "Daily Tar Heel Women in Science Feature",
+      "url": "http://www.dailytarheel.com/article/2018/01/science-women-0128"
+    },
+    {
+      "title": "Exemplary Researcher in Endeavors Magazine",
+      "url": "http://endeavors.unc.edu/sweta-karlekar/"
+    }
+  ],
+  "sources": [
+    {
+      "title": "Sweta Karlekar’s LinkedIn profile",
+      "url": "https://www.linkedin.com/in/swetakarlekar/",
+      "note": "Service roles and dates from the publicly indexed volunteer experience section. The Fall 2024 COMS 6998 teaching assistant role and instructor were supplied directly by Sweta."
+    },
+    {
+      "title": "Research CV, fall 2026",
+      "url": "/files/Karlekar_Sweta_research_CV_2026_fall.pdf",
+      "note": "Education, fellowships, and completed experience."
+    },
+    {
+      "title": "Mechanistic Topic Models on arXiv",
+      "url": "https://arxiv.org/abs/2507.23220",
+      "note": "Publication details; the current version records acceptance at TACL."
+    },
+    {
+      "title": "Hallucination Rate paper in the NeurIPS 2024 proceedings",
+      "url": "https://proceedings.neurips.cc/paper_files/paper/2024/hash/3791f5fc0e8e43730466afd2bcdb7493-Abstract-Conference.html",
+      "note": "Official publication record and author list."
+    },
+    {
+      "title": "Intro to Mechanistic Interpretability",
+      "url": "/files/intro_to_mech_interp.pdf",
+      "note": "Slides by Sweta Karlekar for COMS6998: Frontiers of ML."
+    },
+    {
+      "title": "Exploring a Flexible Computational Method for Comparing Massive Interaction Data from Science Visualizations",
+      "url": "/files/nsf_making_science_visible_poster.pdf",
+      "note": "Research poster linked from the original portfolio."
+    },
+    {
+      "title": "al-folio",
+      "url": "https://github.com/alshedivat/al-folio",
+      "note": "Academic layout inspiration."
+    }
+  ],
+  "chalk_talk_notes_disclaimer": "My handwritten notes were transcribed into LaTeX by ChatGPT to make them easier to share. These notes may contain transcription errors or other inaccuracies.",
+  "chalk_talk_notes": [
+    {
+      "id": "wainwright-jordan-notes",
+      "title": "Graphical Models, Exponential Families, and Variational Inference — Chapters 1–2",
+      "summary": "Notes on Martin J. Wainwright and Michael I. Jordan (2008), covering graphical-model factorizations, message passing, junction trees, and approximate inference.",
+      "links": [
+        {
+          "label": "Notes PDF",
+          "url": "/files/lecture_notes/wainwright_jordan_chapters_1_2_lecture_notes.pdf"
+        }
+      ]
+    },
+    {
+      "id": "ding-causal-inference-notes",
+      "title": "A First Course in Causal Inference — Chapters 14–16",
+      "summary": "Notes on Peng Ding’s text, covering propensity scores, weighting, matching, causal diagrams, and unconfoundedness.",
+      "links": [
+        {
+          "label": "Notes PDF",
+          "url": "/files/lecture_notes/ding_causal_inference_chapters_14_16_lecture_notes.pdf"
+        }
+      ]
+    },
+    {
+      "id": "epiplexity-notes",
+      "title": "From Entropy to Epiplexity: Rethinking Information for Computationally Bounded Intelligence",
+      "summary": "Notes on the 2026 paper by Marc Finzi, Shikai Qiu, Yiding Jiang, Pavel Izmailov, J. Zico Kolter, and Andrew Gordon Wilson. Topics include entropy, Kolmogorov complexity, time-bounded minimum description length, and epiplexity.",
+      "links": [
+        {
+          "label": "Notes PDF",
+          "url": "/files/lecture_notes/epiplexity_complete_whiteboard_notes_with_title.pdf"
+        }
+      ]
+    }
+  ]
+}

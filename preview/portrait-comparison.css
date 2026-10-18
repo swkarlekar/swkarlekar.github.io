@@ -1,0 +1,94 @@
+.comparison-page {
+  max-width: 840px;
+  margin: 48px auto 64px;
+  padding: 0 16px;
+}
+
+.comparison-heading {
+  margin-bottom: 28px;
+}
+
+.comparison-back {
+  display: inline-block;
+  margin-bottom: 21px;
+  font-size: 12px;
+}
+
+.comparison-heading h1 {
+  font-size: 32px;
+  letter-spacing: -.8px;
+}
+
+.comparison-heading p {
+  margin: 12px 0 0;
+  font-size: 13px;
+  color: var(--muted);
+}
+
+.comparison-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  align-items: start;
+  gap: 20px;
+}
+
+.comparison-card {
+  min-width: 0;
+  padding: 26px 16px;
+  background: var(--paper);
+  box-shadow: var(--shadow);
+  text-align: center;
+}
+
+.comparison-card h2 {
+  margin: 0 0 23px;
+  font-size: 18px;
+}
+
+.comparison-card .portrait-wrap {
+  width: 272px;
+  margin: 0 auto;
+}
+
+.comparison-card .portrait {
+  display: block;
+  width: 261px;
+  height: auto;
+  aspect-ratio: auto;
+  object-fit: contain;
+}
+
+.comparison-card .button {
+  margin-top: 25px;
+}
+
+@media (max-width: 659px) {
+  .comparison-page {
+    margin-top: 28px;
+  }
+
+  .comparison-heading h1 {
+    font-size: 27px;
+  }
+
+  .comparison-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .comparison-card {
+    width: 100%;
+    max-width: 400px;
+    margin: 0 auto;
+  }
+}
+
+@media (max-width: 380px) {
+  .comparison-page {
+    padding: 0 12px;
+  }
+
+  .comparison-card {
+    padding-right: 12px;
+    padding-left: 12px;
+  }
+}

@@ -1,0 +1,236 @@
+#!/usr/bin/env python3
+"""Package the public website into dist/ using an explicit file allowlist.
+
+Run from any directory with: python3 scripts/package_site.py
+The source tree is never changed. A nonempty dist/ can be replaced only when
+its ownership marker identifies this script and this repository directory.
+"""
+
+from __future__ import annotations
+
+import argparse
+import hashlib
+import json
+import os
+from pathlib import Path
+import shutil
+import stat
+import sys
+import tempfile
+
+
+ROOT = Path(__file__).resolve().parent.parent
+OUTPUT_NAME = "dist"
+MARKER_NAME = ".site-package-manifest.json"
+GENERATOR = "scripts/package_site.py"
+FORMAT_VERSION = 1
+
+REQUIRED_FILES = (
+    "index.html",
+    "publications.html",
+    "projects.html",
+    "cv.html",
+    "awards.html",
+    "publications.bib",
+    "CNAME",
+    "assets/css/academic.css",
+    "assets/js/academic.js",
+    "images/optimized/headshot-2026-480.jpg",
+    "images/optimized/headshot-2026-960.jpg",
+    "images/optimized/headshot-2026-480.webp",
+    "images/optimized/headshot-2026-960.webp",
+    "images/optimized/about-450.jpg",
+    "images/optimized/about-450.webp",
+    "images/optimized/favicon-64.png",
+    "files/emnlp_mtm_poster.png",
+    "files/lecture_notes/wainwright_jordan_chapters_1_2_lecture_notes.pdf",
+    "files/lecture_notes/ding_causal_inference_chapters_14_16_lecture_notes.pdf",
+    "files/lecture_notes/epiplexity_complete_whiteboard_notes_with_title.pdf",
+)
+COMPATIBILITY_FILES = (
+    "academic/index.html",
+    "academic/publications.html",
+    "academic/projects.html",
+    "academic/cv.html",
+    "academic/awards.html",
+    "academic/publications.bib",
+)
+
+
+class PackagingError(Exception):
+    """A source or output path does not meet the packaging contract."""
+
+
+def require_regular_file(path: Path) -> None:
+    """Reject symlinked files and symlinked parent directories."""
+    try:
+        relative = path.relative_to(ROOT)
+    except ValueError as error:
+        raise PackagingError(f"Input is outside the repository: {path}") from error
+    parent = ROOT
+    for part in relative.parts[:-1]:
+        parent /= part
+        if parent.is_symlink() or not parent.is_dir():
+            raise PackagingError(f"Input parent must be a real directory: {parent}")
+    try:
+        mode = path.lstat().st_mode
+    except FileNotFoundError as error:
+        raise PackagingError(f"Required input is missing: {relative}") from error
+    if not stat.S_ISREG(mode):
+        raise PackagingError(f"Input must be a regular file: {relative}")
+
+
+def directory_files(relative: str, *, pdf_only: bool = False) -> list[str]:
+    """Allow direct files only; do not traverse subdirectories."""
+    directory = ROOT / relative
+    if directory.is_symlink() or not directory.is_dir():
+        raise PackagingError(f"Required input directory is missing or symlinked: {relative}")
+    files = []
+    for path in sorted(directory.iterdir()):
+        if path.name.startswith("."):
+            continue
+        if pdf_only and path.suffix.lower() != ".pdf":
+            continue
+        if path.is_dir() and not path.is_symlink():
+            continue
+        require_regular_file(path)
+        files.append(path.relative_to(ROOT).as_posix())
+    return files
+
+
+def collect_inputs() -> list[str]:
+    files = list(REQUIRED_FILES)
+    files.extend(directory_files("assets/fonts"))
+    files.extend(directory_files("assets/icons"))
+    files.extend(directory_files("files", pdf_only=True))
+    for relative in COMPATIBILITY_FILES:
+        path = ROOT / relative
+        if path.exists() or path.is_symlink():
+            files.append(relative)
+    files = sorted(set(files))
+    for relative in files:
+        require_regular_file(ROOT / relative)
+    return files
+
+
+def marker_identity() -> dict[str, object]:
+    return {
+        "generator": GENERATOR,
+        "format_version": FORMAT_VERSION,
+        "repository": hashlib.sha256(str(ROOT).encode("utf-8")).hexdigest(),
+    }
+
+
+def validate_output(output: Path) -> tuple[int, int] | None:
+    """Return the existing directory identity, or None for an absent output."""
+    if output.parent != ROOT or output.name != OUTPUT_NAME:
+        raise PackagingError("Output must be the repository's dist/ directory.")
+    if output.is_symlink():
+        raise PackagingError("Refusing to replace a symlink at dist/.")
+    if not output.exists():
+        return None
+    info = output.lstat()
+    if not stat.S_ISDIR(info.st_mode):
+        raise PackagingError("Refusing to replace dist/: it is not a directory.")
+    if not any(output.iterdir()):
+        return info.st_dev, info.st_ino
+    marker = output / MARKER_NAME
+    try:
+        if not stat.S_ISREG(marker.lstat().st_mode):
+            raise PackagingError("The dist/ ownership marker is not a regular file.")
+        metadata = json.loads(marker.read_text(encoding="utf-8"))
+    except (FileNotFoundError, UnicodeError, json.JSONDecodeError) as error:
+        raise PackagingError(
+            "Refusing to replace nonempty dist/: its ownership marker is missing or invalid."
+        ) from error
+    if not isinstance(metadata, dict) or any(
+        metadata.get(key) != value for key, value in marker_identity().items()
+    ):
+        raise PackagingError(
+            "Refusing to replace nonempty dist/: its ownership marker does not match this script and repository."
+        )
+    return info.st_dev, info.st_ino
+
+
+def discard_owned_temporary(path: Path) -> None:
+    """Remove only a temporary directory allocated by this packaging run."""
+    if path.parent != ROOT or not path.name.startswith(".site-package-"):
+        raise PackagingError(f"Refusing to remove an unexpected temporary path: {path}")
+    if path.is_symlink() or not path.is_dir():
+        raise PackagingError(f"Temporary path is no longer a real directory: {path}")
+    shutil.rmtree(path)
+
+
+def package_site() -> tuple[int, int]:
+    files = collect_inputs()
+    output = ROOT / OUTPUT_NAME
+    original_output = validate_output(output)
+    staging = Path(tempfile.mkdtemp(prefix=".site-package-stage-", dir=ROOT))
+    previous = None
+    total_bytes = 0
+    try:
+        manifest_files = []
+        for relative in files:
+            source = ROOT / relative
+            require_regular_file(source)
+            destination = staging / relative
+            destination.parent.mkdir(parents=True, exist_ok=True)
+            shutil.copyfile(source, destination)
+            data = destination.read_bytes()
+            total_bytes += len(data)
+            manifest_files.append(
+                {
+                    "path": relative,
+                    "bytes": len(data),
+                    "sha256": hashlib.sha256(data).hexdigest(),
+                }
+            )
+        manifest = {**marker_identity(), "files": manifest_files}
+        (staging / MARKER_NAME).write_text(
+            json.dumps(manifest, indent=2, ensure_ascii=False) + "\n",
+            encoding="utf-8",
+        )
+
+        # Recheck scope and ownership immediately before replacing output.
+        if validate_output(output) != original_output:
+            raise PackagingError("dist/ changed during packaging; leaving it untouched.")
+        if original_output is not None:
+            previous = Path(tempfile.mkdtemp(prefix=".site-package-previous-", dir=ROOT))
+            # The backup target is a known empty temporary directory. Directory
+            # renames keep the previous tree intact until the new one is ready.
+            os.replace(output, previous)
+        try:
+            os.replace(staging, output)
+        except OSError:
+            if previous is not None:
+                os.replace(previous, output)
+                previous = None
+            raise
+        staging = None
+        if previous is not None:
+            discard_owned_temporary(previous)
+            previous = None
+        return len(files), total_bytes
+    finally:
+        if staging is not None and staging.exists():
+            discard_owned_temporary(staging)
+        # Keep a previous tree if an unexpected failure prevented restoration.
+        # It can be recovered without deleting or changing any source files.
+        if previous is not None and previous.exists():
+            print(f"Previous output retained at: {previous}", file=sys.stderr)
+
+
+def main() -> int:
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.parse_args()
+    try:
+        count, total_bytes = package_site()
+    except (PackagingError, OSError) as error:
+        print(f"Packaging failed: {error}", file=sys.stderr)
+        return 1
+    print(f"Packaged {count} files ({total_bytes:,} bytes) into {OUTPUT_NAME}/.")
+    return 0
+
+
+if __name__ == "__main__":
+    raise SystemExit(main())

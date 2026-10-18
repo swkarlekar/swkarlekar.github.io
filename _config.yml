@@ -1,0 +1,15 @@
+# GitHub Pages' Jekyll build copies the ready-made HTML and active assets.
+# Historical snapshots and authoring/preview files stay out of the public site.
+exclude:
+  - _archive
+  - files/old_resumes
+  - images/IMG_4959.png
+  - images/IMG_4959_cropped.png
+  - images/optimized/headshot-490.jpg
+  - images/optimized/headshot-979.jpg
+  - scripts
+  - content
+  - preview
+  - dist
+  - README.md
+  - .DS_Store

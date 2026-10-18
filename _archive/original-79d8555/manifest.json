@@ -1,0 +1,344 @@
+{
+  "snapshot": "original-79d8555",
+  "kind": "exact-git-commit-payload",
+  "baseline_git_commit": "79d855576353986ad328be370dd1d0174272e6ac",
+  "captured_at_utc": "2026-10-17T21:23:12.616747+00:00",
+  "source_file_count": 64,
+  "metadata_files": [
+    "README.txt",
+    "manifest.json"
+  ],
+  "manifest_excludes_itself": true,
+  "exclusions": [
+    ".git/",
+    "untracked files",
+    "files outside workspace"
+  ],
+  "files": [
+    {
+      "path": ".gitignore",
+      "bytes": 10,
+      "sha256": "cf237c7aff44efbe6e502e645c3e06da03a69d7bdeb43392108ef3348143417e"
+    },
+    {
+      "path": "CNAME",
+      "bytes": 9,
+      "sha256": "b4115d208310ef5272cbb6a0097ebfe56b0de368a9773779c71a845e696c3f9f"
+    },
+    {
+      "path": "README.txt",
+      "bytes": 814,
+      "sha256": "a55992ae2a0e69b222e66f42a470defa2a3aeb95e86440b30a7228fc746e52ca"
+    },
+    {
+      "path": "assets/css/fontawesome-all.min.css",
+      "bytes": 56198,
+      "sha256": "d299667bca2cf291934cdafd685d46383a127424b3ba64ba7a4b16e4033c8c72"
+    },
+    {
+      "path": "assets/css/main.css",
+      "bytes": 34780,
+      "sha256": "aa50678841de823020415663dcce9dfa66054ca50b2356cdb848201f80f051cb"
+    },
+    {
+      "path": "assets/css/noscript.css",
+      "bytes": 683,
+      "sha256": "344c92c9021727a6de74196832a1762b9ea832a75561fcb8abcdb84903ef2418"
+    },
+    {
+      "path": "assets/js/breakpoints.min.js",
+      "bytes": 2439,
+      "sha256": "309febcd6d6e0cf092201532215f03a6a9f30b30f26203272a4861d704e7cd52"
+    },
+    {
+      "path": "assets/js/browser.min.js",
+      "bytes": 1851,
+      "sha256": "87910d5ed0053d90caf83230a2f1811d8679815da01f7bdec7548e776d7f04c4"
+    },
+    {
+      "path": "assets/js/jquery.min.js",
+      "bytes": 88145,
+      "sha256": "0925e8ad7bd971391a8b1e98be8e87a6971919eb5b60c196485941c3c1df089a"
+    },
+    {
+      "path": "assets/js/main.js",
+      "bytes": 4794,
+      "sha256": "2a7335c8d02f4d4d4cb61b4ec83387dda71c38910d81189449d2f053cc1cec76"
+    },
+    {
+      "path": "assets/js/util.js",
+      "bytes": 12433,
+      "sha256": "c2e1e72b0de356f6ce184e3af4fa8ab6590a2581162905a27d77886b2d960e00"
+    },
+    {
+      "path": "assets/sass/base/_page.scss",
+      "bytes": 849,
+      "sha256": "099c0afff95a450bdda2012e36d3afb5453110740be04ff01f47e37bb1bc8ea3"
+    },
+    {
+      "path": "assets/sass/base/_reset.scss",
+      "bytes": 1538,
+      "sha256": "eaa29056051ef33c4682429dd98d156ee44617e81bd4debdc18192db220d4fe2"
+    },
+    {
+      "path": "assets/sass/base/_typography.scss",
+      "bytes": 2807,
+      "sha256": "3c811ef2e8570007841b1ddceb8b3cb8d8e11441cc5ce56a714d7e6f5206ed11"
+    },
+    {
+      "path": "assets/sass/components/_actions.scss",
+      "bytes": 2351,
+      "sha256": "30e0378290eca3c35bc8cef369b9f9ac5388280386e9b4b7127746e2e1126f1a"
+    },
+    {
+      "path": "assets/sass/components/_box.scss",
+      "bytes": 483,
+      "sha256": "d02267a3775c0953e1422cf0069791fcdc5b04d1795146991b5ad02ff1fac7d1"
+    },
+    {
+      "path": "assets/sass/components/_button.scss",
+      "bytes": 3543,
+      "sha256": "8db50ab45287c22c7f31d259d4f04e4f4778cacfd4a5901f882d24222f302d83"
+    },
+    {
+      "path": "assets/sass/components/_form.scss",
+      "bytes": 5376,
+      "sha256": "8670cc9fa5b742bb2fdf3c0a5562065c028838541c60f6f762c00fb73b99aed3"
+    },
+    {
+      "path": "assets/sass/components/_icon.scss",
+      "bytes": 403,
+      "sha256": "8b57379084c0b5bd6a3cfad4297ac58356bd745f0b6ad472d5595dc2444d06d9"
+    },
+    {
+      "path": "assets/sass/components/_icons.scss",
+      "bytes": 436,
+      "sha256": "ee3ebac478b6120f583a6c339097de9e9313a33e0e0eb344a22ce291c7e000f5"
+    },
+    {
+      "path": "assets/sass/components/_image.scss",
+      "bytes": 855,
+      "sha256": "dbdd31c0c120d00d1f05619e536750fb84891bdd49fd7f0be1a7fba9b7821a31"
+    },
+    {
+      "path": "assets/sass/components/_list.scss",
+      "bytes": 860,
+      "sha256": "6b6fd1e9290082896d183c707eacb685e7a08a8cc149e2744d705871aed0187b"
+    },
+    {
+      "path": "assets/sass/components/_section.scss",
+      "bytes": 954,
+      "sha256": "7fcbde503b63afad140a047369429c39f8a84f744b3a37ecf4d8ec18337ff89f"
+    },
+    {
+      "path": "assets/sass/components/_table.scss",
+      "bytes": 1259,
+      "sha256": "1ea4baa220b6e1885a09b3430e1d83c739dd8f9fc488a9a5d0cf58ad4cc8c258"
+    },
+    {
+      "path": "assets/sass/layout/_footer.scss",
+      "bytes": 737,
+      "sha256": "22e3762a15b30b06a6fa833f73377166a443a4e7c65c6d8724d26959ee86ed62"
+    },
+    {
+      "path": "assets/sass/layout/_panel.scss",
+      "bytes": 4143,
+      "sha256": "ecc36f6f8bfe3a3771649d46b643415b0c2e9cf1dae8d060cd4cde97cab106ee"
+    },
+    {
+      "path": "assets/sass/layout/_wrapper.scss",
+      "bytes": 717,
+      "sha256": "34fbb8ba74eae73005ede0e65ff2d2072a1212cf91ac449cf9244bfd2055d845"
+    },
+    {
+      "path": "assets/sass/libs/_breakpoints.scss",
+      "bytes": 4577,
+      "sha256": "acda021bb809760083b40a54e76454bc58a56a2ec90965ea5a6820e2fb67f286"
+    },
+    {
+      "path": "assets/sass/libs/_functions.scss",
+      "bytes": 1957,
+      "sha256": "fc832d9ccc89117bb05beed1e5fb328e7f909845d2220a1060375142f51b7e5d"
+    },
+    {
+      "path": "assets/sass/libs/_mixins.scss",
+      "bytes": 2218,
+      "sha256": "63a02894ddc14717b0d58982ba6220f58bf20c3b9fdfc58f70a282168cb35c85"
+    },
+    {
+      "path": "assets/sass/libs/_vars.scss",
+      "bytes": 744,
+      "sha256": "c708320b1bd14f90c2402030415cc7be9aa1e319ce555aef1908fe5926ee74fc"
+    },
+    {
+      "path": "assets/sass/libs/_vendor.scss",
+      "bytes": 7355,
+      "sha256": "f081f8ff029549e642a7ff5a615752e1e9032258b635abcef39f59e747d39d12"
+    },
+    {
+      "path": "assets/sass/main.scss",
+      "bytes": 1113,
+      "sha256": "fafe875746214f7ca559ea2277279a656cec05c3aae2b0415829c4b88fda3998"
+    },
+    {
+      "path": "assets/sass/noscript.scss",
+      "bytes": 620,
+      "sha256": "20b0ecfa542d8a28f966c1ab86c958a8dd3979da5844fdeb68485ae965ed814b"
+    },
+    {
+      "path": "assets/webfonts/fa-brands-400.eot",
+      "bytes": 129352,
+      "sha256": "931d173390b901b84b133796a2e42e54b82a4d60fc7f0baa23e05742af9793e8"
+    },
+    {
+      "path": "assets/webfonts/fa-brands-400.svg",
+      "bytes": 689922,
+      "sha256": "85eee11562ca8330dd6e3e7b726309ab95110e062d72c759abc83f897b8ed074"
+    },
+    {
+      "path": "assets/webfonts/fa-brands-400.ttf",
+      "bytes": 129048,
+      "sha256": "d7746d2966e30323266a9f7ea24be80940f7a0207a0b91dde1669f3b3bdecd33"
+    },
+    {
+      "path": "assets/webfonts/fa-brands-400.woff",
+      "bytes": 87352,
+      "sha256": "ef7234f1e9d303d2e42a209c547c217b90afa49d60502d04f1b14c906efc02d1"
+    },
+    {
+      "path": "assets/webfonts/fa-brands-400.woff2",
+      "bytes": 74508,
+      "sha256": "1f49b8706547682e2c5ed6642a2f2dcbd287da458314b967c60d774aa7edb473"
+    },
+    {
+      "path": "assets/webfonts/fa-regular-400.eot",
+      "bytes": 34388,
+      "sha256": "da05e5ee7c75c965efb151a6e87ab5589b8023f246f698c1d14946414bc31c90"
+    },
+    {
+      "path": "assets/webfonts/fa-regular-400.svg",
+      "bytes": 144451,
+      "sha256": "e14de0404bcbe28ac413bd4c992f552af250da30823e635ab9a7656e50e77bc8"
+    },
+    {
+      "path": "assets/webfonts/fa-regular-400.ttf",
+      "bytes": 34092,
+      "sha256": "4e2fc1d3828b93e7e943c8017a542b0ad00f6333d28748658bb0697de23fd52e"
+    },
+    {
+      "path": "assets/webfonts/fa-regular-400.woff",
+      "bytes": 16804,
+      "sha256": "684157e40f7ee2429707a23d5b77d2c71c5d23f26a9d82839275ff984d13053b"
+    },
+    {
+      "path": "assets/webfonts/fa-regular-400.woff2",
+      "bytes": 13580,
+      "sha256": "6a16c04229bc2b4da226eb97e68d94f49ba6437b7b5e16c14a101b21a29384e9"
+    },
+    {
+      "path": "assets/webfonts/fa-solid-900.eot",
+      "bytes": 192116,
+      "sha256": "d5342ae679d7064d475403ce5fe05d80f1a0abe5881f729ee0e3272a9c355f3b"
+    },
+    {
+      "path": "assets/webfonts/fa-solid-900.svg",
+      "bytes": 839388,
+      "sha256": "4ee1b170ff51b7fda11acef551d1ef492c0ebc1aff8e5712d3e30fcbb835776d"
+    },
+    {
+      "path": "assets/webfonts/fa-solid-900.ttf",
+      "bytes": 191832,
+      "sha256": "9313de7304bef452ff5ac93e0f9ca48c3971d2fbb502c3fa1e2c2ea1f91ad853"
+    },
+    {
+      "path": "assets/webfonts/fa-solid-900.woff",
+      "bytes": 98020,
+      "sha256": "c1450cddfd98668e6e593e2d26f11b4c43faaccb5f033b0b50ea6f1ce7bf4b58"
+    },
+    {
+      "path": "assets/webfonts/fa-solid-900.woff2",
+      "bytes": 75440,
+      "sha256": "cd398be1a91817126cef10224738e624358edf6f08043abad7e60c1aaeccc8d0"
+    },
+    {
+      "path": "files/Alzheimers_Research_Presentation.pdf",
+      "bytes": 3612797,
+      "sha256": "04f3a66d7010bfa274fff62452d1dc9a0829022ee3cac09d804b97c847752493"
+    },
+    {
+      "path": "files/Karlekar_GRL.pdf",
+      "bytes": 1592122,
+      "sha256": "9c7ca9a9eff508a23985b23f19b48c2de682ff4581058f40784e0fae5d71029a"
+    },
+    {
+      "path": "files/Karlekar_Sweta_Resume.pdf",
+      "bytes": 204734,
+      "sha256": "96bf624f2f0cd53cee158216e0c6cae3ac431001f41dabfb7f9bf36a84791be5"
+    },
+    {
+      "path": "files/Karlekar_Sweta_Resume_old.pdf",
+      "bytes": 210232,
+      "sha256": "97faa6d95b58d89d04feba17b6e55258f2d08af97172b22f58c5c74d61879f2d"
+    },
+    {
+      "path": "files/Karlekar_Sweta_Resume_old_2.pdf",
+      "bytes": 107732,
+      "sha256": "aa58fc8910f66eaeaf3ab4692dbbaf66a9a2f1a2281e1fa320200cf33ca1a89b"
+    },
+    {
+      "path": "files/admit_brochure.pdf",
+      "bytes": 1160392,
+      "sha256": "044c9adbcee533bf4673c8bc75049930ca8ba51fc15cf0d921c1035681da360d"
+    },
+    {
+      "path": "files/intro_to_mech_interp.pdf",
+      "bytes": 2393097,
+      "sha256": "77038f1e8aea0d4b6417e052cf3d29f9118b321569f5eefd764ea5e43ddaeb6b"
+    },
+    {
+      "path": "files/naacl_dementia_poster.pdf",
+      "bytes": 3075046,
+      "sha256": "6d2394c5414acc1cb7b1f29388b711494dcae6e46697b4962f2917bea444daf1"
+    },
+    {
+      "path": "files/naacl_winlp_poster.pdf",
+      "bytes": 2869033,
+      "sha256": "5dc7be13fe78759d26d7907cabe29a7ae5c0a1a1f1925bdb87a7dbc776fd211b"
+    },
+    {
+      "path": "files/nsf_making_science_visible_poster.pdf",
+      "bytes": 1487873,
+      "sha256": "db7f4f340adef505d0acb2afd5191c4770da632c893e6db570b0da304767f3ed"
+    },
+    {
+      "path": "images/genome_building.jpg",
+      "bytes": 5552447,
+      "sha256": "641b7fe1e4f672aaa5493d4cfea9c9156bb69c076d88796d9e3de95ebbf72d09"
+    },
+    {
+      "path": "images/golden_gate_park_sf.png",
+      "bytes": 19411688,
+      "sha256": "a499362b4ba0c62519c3e79e758bef4b54721472b1f4b2c04936149bd767a84e"
+    },
+    {
+      "path": "images/headshot.jpg",
+      "bytes": 3129415,
+      "sha256": "9ca587450fd6cad8bff1c01e2cbf54a00100fc0b7cbdbb3d0c2180a15afdda37"
+    },
+    {
+      "path": "images/research_vertical_banner.jpg",
+      "bytes": 7791380,
+      "sha256": "741b07f81a672807eaf26f0bd8467e55e4b0a37948195e239a935b385dbe9ae7"
+    },
+    {
+      "path": "images/sk.png",
+      "bytes": 467219,
+      "sha256": "1ca1393cb6074c179c3260c47018ee79a79870d8757aa1d44c92aea16b93304e"
+    },
+    {
+      "path": "index.html",
+      "bytes": 32505,
+      "sha256": "be9dcf5f3bedae0584af5f7c1efaaadd7ba55cdd2f0d430ce44de336a44d4451"
+    }
+  ]
+}
