@@ -1,0 +1,4 @@
+# Build-time only. The published website serves no third-party JavaScript.
+markdown-it-py==4.2.0
+mdurl==0.1.2
+PyYAML==6.0.3

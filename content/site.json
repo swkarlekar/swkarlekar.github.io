@@ -293,7 +293,7 @@
     {
       "id": "text-based-interventions",
       "title": "Examining the Structure of Text-Based Interventions in Large Language Models",
-      "summary": "Investigates how language-model activations change between concepts and their counterfactuals. The project compares constant, linear, and nonlinear relationships between activation vectors to examine the linear representation hypothesis and the structure of activation steering.",
+      "summary": "Tests the linear representation hypothesis by treating concept changes in text as interventions and LLM activations as potential outcomes. Using WordNet antonyms and GPT-4-generated counterfactual sentence pairs, we compare constant shifts, linear transformations, and nonlinear mappings. Preliminary results favor constant shifts on a small sample of concepts.",
       "context": "Sweta Karlekar, Gabriel Chuang, and Claudia Shi · Columbia University Computer Science",
       "links": [
         {

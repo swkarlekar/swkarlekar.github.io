@@ -1,9 +1,20 @@
 #!/usr/bin/env python3
-"""Build the academic website using only Python's standard library."""
+"""Build the static academic website and Markdown blog."""
+import argparse
 from datetime import date
 from html import escape
 import json
 from pathlib import Path
+import sys
+import time
+
+try:
+    from blog_posts import BlogError, load_posts, read_post, reading_minutes, render_markdown
+except ModuleNotFoundError as error:
+    raise SystemExit(
+        "Missing build dependencies. Run .venv/bin/python -m pip install -r "
+        "requirements-build.txt, then use .venv/bin/python scripts/build_site.py."
+    ) from error
 
 ROOT = Path(__file__).resolve().parents[1]
 DEST = ROOT
@@ -20,7 +31,7 @@ def url(value):
     return value.lstrip("/") if value.startswith("/") else value
 
 
-def link(label, href, css="", new=False):
+def link(label, href, css="", new=False, asset_prefix=""):
     target = ' target="_blank" rel="noopener"' if new else ""
     label = label.replace("↗", "").replace("↓", "").strip()
     lower = label.lower()
@@ -48,16 +59,18 @@ def link(label, href, css="", new=False):
         symbol = "book"
     else:
         symbol = "document"
-    glyph = f'<svg class="icon" viewBox="0 0 24 24" width="16" height="16" aria-hidden="true" focusable="false"><use href="assets/icons/sprite.svg#{symbol}" width="24" height="24"></use></svg>'
+    glyph = f'<svg class="icon" viewBox="0 0 24 24" width="16" height="16" aria-hidden="true" focusable="false"><use href="{h(asset_prefix)}assets/icons/sprite.svg#{symbol}" width="24" height="24"></use></svg>'
     return f'<a class="{h(css)} icon-link" href="{h(url(href))}"{target}>{glyph}<span>{h(label)}</span></a>'
 
 
-def document(title, page, body):
+def document(title, page, body, *, prefix="", description=None):
     nav = "".join(
-        f'<a href="{href}"' + (' aria-current="page"' if key == page else "") + f'>{label}</a>'
+        f'<a href="{h(prefix + href)}"' + (' aria-current="page"' if key == page else "") + f'>{label}</a>'
         for key, href, label in [("about", "index.html", "About"), ("publications", "publications.html", "Publications"),
-                                 ("cv", "cv.html", "CV"), ("awards", "awards.html", "Awards"), ("projects", "projects.html", "More")]
+                                 ("cv", "cv.html", "CV"), ("awards", "awards.html", "Awards"),
+                                 ("blog", "blog.html", "Blog"), ("projects", "projects.html", "More")]
     )
+    description = description or "Sweta Karlekar — Computer Science PhD student at Columbia University. Research in natural language processing, mechanistic interpretability, and probabilistic modeling."
     return f'''<!doctype html>
 <html lang="en">
 <head>
@@ -65,18 +78,18 @@ def document(title, page, body):
   <meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'self'; style-src 'self'; img-src 'self' data:; font-src 'self'; base-uri 'none'; form-action 'none'; object-src 'none'">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="referrer" content="strict-origin-when-cross-origin">
-  <meta name="description" content="Sweta Karlekar — Computer Science PhD student at Columbia University. Research in natural language processing, mechanistic interpretability, and probabilistic modeling.">
+  <meta name="description" content="{h(description)}">
   <meta name="theme-color" content="#f4f4f4">
   <title>{h(title)} · Sweta Karlekar</title>
-  <link rel="icon" href="images/optimized/favicon-64.png" type="image/png">
-  <link rel="stylesheet" href="assets/css/academic.css">
-  <script src="assets/js/academic.js" defer></script>
+  <link rel="icon" href="{h(prefix)}images/optimized/favicon-64.png" type="image/png">
+  <link rel="stylesheet" href="{h(prefix)}assets/css/academic.css">
+  <script src="{h(prefix)}assets/js/academic.js" defer></script>
 </head>
 <body data-page="{h(page)}">
   <a class="skip-link" href="#main">Skip to content</a>
   <header class="site-header">
     <div class="header-inner">
-      <a class="wordmark" href="index.html">Sweta <strong>Karlekar</strong></a>
+      <a class="wordmark" href="{h(prefix)}index.html">Sweta <strong>Karlekar</strong></a>
       <div class="header-controls">
         <nav aria-label="Main navigation">{nav}</nav>
         <button class="theme-toggle" type="button" aria-label="Switch color theme" hidden><span aria-hidden="true">◐</span></button>
@@ -86,7 +99,7 @@ def document(title, page, body):
   <main id="main" class="page page-{h(page)}">{body}</main>
   <footer class="site-footer">
     <p>© {date.today().year} Sweta Karlekar <span aria-hidden="true">·</span> Columbia University</p>
-    {link('Google Scholar', 'https://scholar.google.com/citations?user=P9lDUcEAAAAJ&hl=en', new=True)}
+    {link('Google Scholar', 'https://scholar.google.com/citations?user=P9lDUcEAAAAJ&hl=en', new=True, asset_prefix=prefix)}
   </footer>
 </body>
 </html>
@@ -219,7 +232,7 @@ def about():
         </div>
       </div>
       <aside class="profile">
-        <div class="portrait-wrap"><picture><source type="image/webp" srcset="images/optimized/headshot-2026-480.webp?v=user-crop 480w, images/optimized/headshot-2026-960.webp?v=user-crop 960w" sizes="(max-width: 680px) 229px, (max-width: 820px) 199px, (max-width: 1100px) 239px, (min-width: 1500px) 274px, 261px"><img class="portrait" src="images/optimized/headshot-2026-480.jpg?v=user-crop" srcset="images/optimized/headshot-2026-480.jpg?v=user-crop 480w, images/optimized/headshot-2026-960.jpg?v=user-crop 960w" sizes="(max-width: 680px) 229px, (max-width: 820px) 199px, (max-width: 1100px) 239px, (min-width: 1500px) 274px, 261px" width="960" height="1302" alt="Sweta Karlekar" fetchpriority="high"></picture></div>
+        <div class="portrait-wrap"><picture><source type="image/webp" srcset="images/optimized/headshot-2026-480.webp?v=cleaned-user-crop 480w, images/optimized/headshot-2026-960.webp?v=cleaned-user-crop 960w" sizes="(max-width: 680px) 229px, (max-width: 820px) 199px, (max-width: 1100px) 239px, (min-width: 1500px) 274px, 261px"><img class="portrait" src="images/optimized/headshot-2026-480.jpg?v=cleaned-user-crop" srcset="images/optimized/headshot-2026-480.jpg?v=cleaned-user-crop 480w, images/optimized/headshot-2026-960.jpg?v=cleaned-user-crop 960w" sizes="(max-width: 680px) 229px, (max-width: 820px) 199px, (max-width: 1100px) 239px, (min-width: 1500px) 274px, 261px" width="960" height="1302" alt="Sweta Karlekar" fetchpriority="high"></picture></div>
       </aside>
     </section>
     <section class="research-interests" aria-label="Research interests"><p class="eyebrow">Research interests</p><ul>{interests}</ul></section>
@@ -240,7 +253,7 @@ def about():
       <picture><source type="image/webp" srcset="images/optimized/about-450.webp"><img src="images/optimized/about-450.jpg" width="450" height="600" alt="Sweta Karlekar in Golden Gate Park, San Francisco" loading="lazy"></picture>
       <div><p class="eyebrow">Beyond research</p><h2 id="beyond-title">A little about me</h2>
       <p>I care about the ways technology can influence society for good, and about making computer science more welcoming through communities like Girls Who Code and Rewriting the Code.</p>
-      <p>Outside of research, I love baking, cooking, reading science fiction and fantasy, crocheting, and painting little rocks.</p></div>
+      <p>Outside of research, I love cooking, reading science fiction and fantasy, going to jazz concerts, and painting little rocks.</p></div>
     </section>'''
 
 
@@ -318,12 +331,107 @@ def awards():
     <section class="features-section" id="featured-articles" aria-label="Featured articles">{section_heading('Featured articles', '03')}<ul class="features-list">{features}</ul></section>'''
 
 
-def main():
+BLOG_MARKER = '<!-- Generated blog page; edit content/blog/ instead. -->\n'
+
+
+def post_date(value):
+    return f'<time datetime="{h(value.isoformat())}">{value.strftime("%B")} {value.day}, {value.year}</time>'
+
+
+def post_tags(post):
+    if not post.tags:
+        return ""
+    return '<ul class="blog-tags" aria-label="Topics">' + "".join(f'<li>{h(tag)}</li>' for tag in post.tags) + '</ul>'
+
+
+def blog_index(posts):
+    rows = "".join(
+        f'''<article class="blog-entry">
+          <div class="blog-entry-date">{post_date(post.date)}</div>
+          <div><h2><a href="posts/{h(post.slug)}.html">{h(post.title)}</a></h2>
+          <p>{h(post.summary)}</p>{post_tags(post)}
+          <a class="blog-read-link" href="posts/{h(post.slug)}.html">Read post <span aria-hidden="true">·</span> {reading_minutes(post.body)} min read</a></div>
+        </article>''' for post in posts
+    )
+    if not rows:
+        rows = '<div class="blog-empty"><span class="blog-empty-line" aria-hidden="true"></span><p>Posts coming soon.</p></div>'
+    return '''<header class="page-heading"><p class="eyebrow">Writing</p><h1>Blog</h1>
+      <div class="blog-intro"><p>A space for my thoughts on research, AI safety, and other things I find important.</p>
+      <aside class="section-intro blog-disclaimer" aria-label="About the opinions expressed here"><p>All opinions and claims expressed are my own (though the writing is often polished with chatbots) and subject to change.</p></aside></div>
+    </header><div class="blog-list">''' + rows + '</div>'
+
+
+def blog_post(post, *, preview=False):
+    banner = '<aside class="draft-banner"><strong>Draft preview</strong><span>This preview is excluded from the published website.</span></aside>' if preview else ""
+    prefix = "../../" if preview else "../"
+    updated = f'<span>Updated {post_date(post.updated)}</span>' if post.updated else ""
+    try:
+        content = render_markdown(post.body)
+    except BlogError as error:
+        raise BlogError(f"{post.source}: {error}") from error
+    body = f'''<article class="blog-post">
+      <a class="blog-back" href="{prefix}blog.html">Back to Blog</a>{banner}
+      <header class="blog-post-heading"><p class="blog-meta">{post_date(post.date)}<span>{reading_minutes(post.body)} min read</span>{updated}</p>
+      <h1>{h(post.title)}</h1>{post_tags(post)}</header>
+      <div class="blog-prose">{content}</div>
+    </article>'''
+    return document(post.title, "blog", body, prefix=prefix, description=post.summary)
+
+
+def validate_blog_output(directory, pages):
+    """Check ownership of both output trees before changing generated pages."""
+    parent = ROOT
+    for part in directory.relative_to(ROOT).parts:
+        parent /= part
+        if parent.is_symlink() or (parent.exists() and not parent.is_dir()):
+            raise BlogError(f"Blog output must use real directories: {parent}")
+    old_pages = []
+    for path in directory.glob("*.html"):
+        if path.is_symlink() or not path.is_file():
+            raise BlogError(f"Blog output must be a regular file: {path}")
+        owned = path.read_bytes().startswith(BLOG_MARKER.encode("utf-8"))
+        if path.name in pages and not owned:
+            raise BlogError(f"Refusing to overwrite a handwritten page: {path}")
+        if owned and path.name not in pages:
+            old_pages.append(path)
+    return old_pages
+
+
+def write_blog_pages(directory, pages):
+    """Replace only generated blog pages, removing obsolete generated URLs."""
+    old_pages = validate_blog_output(directory, pages)
+    directory.mkdir(parents=True, exist_ok=True)
+    for filename, html in pages.items():
+        (directory / filename).write_text(BLOG_MARKER + html, encoding="utf-8")
+    for path in old_pages:
+        path.unlink()
+
+
+def build():
+    global DATA, PROFILE
+    DATA = json.loads((ROOT / "content" / "site.json").read_text())
+    PROFILE = DATA["profile"]
+    all_posts = load_posts(ROOT / "content" / "blog", include_drafts=True)
+    posts = [post for post in all_posts if not post.draft]
+    # Render and validate everything before replacing any generated page.
+    public_pages = {post.slug + ".html": blog_post(post) for post in posts}
+    draft_pages = {"post-" + post.slug + ".html": blog_post(post, preview=True) for post in all_posts if post.draft}
+    template = ROOT / "content" / "blog" / "_template.md"
+    if template.exists():
+        draft_pages["_template.html"] = blog_post(read_post(template), preview=True)
+    preview_rows = '<li><a href="_template.html">Example post layout</a></li>' if template.exists() else ""
+    preview_rows += "".join(f'<li><a href="post-{h(post.slug)}.html">{h(post.title)}</a></li>' for post in all_posts if post.draft)
+    draft_pages["index.html"] = document("Blog previews", "blog", '<header class="page-heading"><p class="eyebrow">Local previews</p><h1>Blog drafts</h1></header><ul class="draft-list">' + preview_rows + '</ul>', prefix="../../")
+    validate_blog_output(ROOT / "posts", public_pages)
+    validate_blog_output(ROOT / "preview" / "blog", draft_pages)
+    write_blog_pages(ROOT / "posts", public_pages)
+    write_blog_pages(ROOT / "preview" / "blog", draft_pages)
     for filename, title, key, body in [("index.html", "About", "about", about()),
                                        ("publications.html", "Publications", "publications", publications()),
                                        ("projects.html", "Projects & talks", "projects", projects()),
                                        ("cv.html", "CV", "cv", cv()),
-                                       ("awards.html", "Awards & features", "awards", awards())]:
+                                       ("awards.html", "Awards & features", "awards", awards()),
+                                       ("blog.html", "Blog", "blog", blog_index(posts))]:
         (DEST / filename).write_text(document(title, key, body))
     (DEST / "publications.bib").write_text("\n\n".join(bibtex(paper) for paper in DATA["publications"]) + "\n")
     # Preserve links to the local design study after promoting it to the root.
@@ -332,8 +440,51 @@ def main():
     for filename in ("index.html", "publications.html", "projects.html", "cv.html", "awards.html"):
         (aliases / filename).write_text('<!doctype html>\n<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><meta http-equiv="refresh" content="0;url=../' + filename + '"><title>Sweta Karlekar</title></head><body><p>This page has moved to <a href="../' + filename + '">the main website</a>.</p></body></html>\n')
     (aliases / "publications.bib").write_text((DEST / "publications.bib").read_text())
-    print("Built five website pages, the bibliography, and design-preview redirects.")
+    print(f"Built six website pages, {len(posts)} blog posts, local draft previews, and the bibliography.", flush=True)
+
+
+def source_signature():
+    paths = [ROOT / "content" / "site.json"]
+    paths.extend((ROOT / "content" / "blog").glob("*.md"))
+    signature = []
+    for path in sorted(paths):
+        try:
+            info = path.stat()
+        except FileNotFoundError:
+            continue  # Some editors replace a file atomically while saving.
+        signature.append((str(path), info.st_mtime_ns, info.st_size))
+    return tuple(signature)
+
+
+def main():
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument("--watch", action="store_true", help="Rebuild when post Markdown or site content changes; refresh the browser to see edits.")
+    args = parser.parse_args()
+    try:
+        build()
+    except (BlogError, OSError, json.JSONDecodeError) as error:
+        print(f"Build failed: {error}", file=sys.stderr)
+        if not args.watch:
+            return 1
+        # Keep watching if started while a Markdown file is still being edited.
+    if not args.watch:
+        return 0
+    print("Watching content/blog/ and site content. Refresh the browser after saving. Ctrl-C stops the watcher.", flush=True)
+    previous = source_signature()
+    try:
+        while True:
+            time.sleep(0.75)
+            current = source_signature()
+            if current == previous:
+                continue
+            previous = current
+            try:
+                build()
+            except (BlogError, OSError, json.JSONDecodeError) as error:
+                print(f"Build failed; fix the source and save again: {error}", file=sys.stderr, flush=True)
+    except KeyboardInterrupt:
+        return 0
 
 
 if __name__ == "__main__":
-    main()
+    raise SystemExit(main())

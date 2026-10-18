@@ -5,6 +5,7 @@ exclude:
   - files/old_resumes
   - images/IMG_4959.png
   - images/IMG_4959_cropped.png
+  - images/IMG_4959_cropped_artifacts_removed.png
   - images/optimized/headshot-490.jpg
   - images/optimized/headshot-979.jpg
   - scripts
@@ -13,3 +14,5 @@ exclude:
   - dist
   - README.md
   - .DS_Store
+  - .venv
+  - requirements-build.txt

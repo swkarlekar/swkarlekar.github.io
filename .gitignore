@@ -1,5 +1,7 @@
 .DS_Store
 dist/
 __pycache__/
+.venv/
 images/IMG_4959.png
 images/IMG_4959_cropped.png
+images/IMG_4959_cropped_artifacts_removed.png
