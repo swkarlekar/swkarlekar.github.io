@@ -121,7 +121,8 @@ class BlogBuildTests(unittest.TestCase):
         self.assertEqual([attrs['href'] for attrs in page.navigation],
                          ['../index.html', '../publications.html', '../cv.html', '../awards.html', '../blog.html', '../projects.html'])
         self.assertEqual([attrs['href'] for attrs in page.navigation if attrs.get('aria-current') == 'page'], ['../blog.html'])
-        self.assertIn(('link', {'rel': 'stylesheet', 'href': '../assets/css/academic.css'}), page.elements)
+        css_version = hashlib.sha256((self.root / 'assets/css/academic.css').read_bytes()).hexdigest()[:12]
+        self.assertIn(('link', {'rel': 'stylesheet', 'href': '../assets/css/academic.css?v=' + css_version}), page.elements)
         self.assertTrue(any(tag == 'script' and attrs.get('src') == '../assets/js/academic.js' for tag, attrs in page.elements))
         self.assertTrue(any(tag == 'link' and attrs.get('href') == '../images/optimized/favicon-64.png' for tag, attrs in page.elements))
         self.assertTrue(any(tag == 'use' and attrs.get('href') == '../assets/icons/sprite.svg#scholar' for tag, attrs in page.elements))
@@ -133,6 +134,31 @@ class BlogBuildTests(unittest.TestCase):
         self.assertIn('src="../../assets/js/academic.js"', draft)
         self.assertFalse((self.root / 'posts/private.html').exists())
         self.assertTrue((self.root / 'preview/blog/_template.html').exists())
+
+    def test_css_changes_invalidate_cached_styles_on_main_post_and_preview_pages(self):
+        self.post('public.md')
+        self.post('private.md', draft=True)
+        self.build()
+        pages = ['index.html', 'publications.html', 'cv.html', 'awards.html',
+                 'blog.html', 'projects.html', 'posts/public.html',
+                 'preview/blog/post-private.html', 'preview/blog/index.html']
+
+        def stylesheet_urls():
+            return {name: next(attrs['href'] for tag, attrs in Page((self.root / name).read_text()).elements
+                               if tag == 'link' and attrs.get('rel') == 'stylesheet') for name in pages}
+
+        original_urls = stylesheet_urls()
+        self.build()
+        self.assertEqual(stylesheet_urls(), original_urls)
+        original_signature = builder.source_signature()
+        stylesheet = self.root / 'assets/css/academic.css'
+        stylesheet.write_text('.post-summary { background: aliceblue; }\n')
+        self.assertNotEqual(builder.source_signature(), original_signature)
+        self.build()
+        for name, href in stylesheet_urls().items():
+            self.assertNotEqual(href, original_urls[name])
+            self.assertEqual(href.split('?', 1)[0], original_urls[name].split('?', 1)[0])
+        self.assertEqual(len({href.split('?', 1)[1] for href in stylesheet_urls().values()}), 1)
 
     def test_draft_publication_rename_and_deletion_remove_obsolete_pages(self):
         self.post(draft=True, slug='original')

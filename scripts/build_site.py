@@ -2,6 +2,7 @@
 """Build the static academic website and Markdown blog."""
 import argparse
 from datetime import date
+import hashlib
 from html import escape
 import json
 from pathlib import Path
@@ -64,6 +65,7 @@ def link(label, href, css="", new=False, asset_prefix=""):
 
 
 def document(title, page, body, *, prefix="", description=None):
+    css_version = hashlib.sha256((ROOT / "assets/css/academic.css").read_bytes()).hexdigest()[:12]
     nav = "".join(
         f'<a href="{h(prefix + href)}"' + (' aria-current="page"' if key == page else "") + f'>{label}</a>'
         for key, href, label in [("about", "index.html", "About"), ("publications", "publications.html", "Publications"),
@@ -82,7 +84,7 @@ def document(title, page, body, *, prefix="", description=None):
   <meta name="theme-color" content="#f4f4f4">
   <title>{h(title)} · Sweta Karlekar</title>
   <link rel="icon" href="{h(prefix)}images/optimized/favicon-64.png" type="image/png">
-  <link rel="stylesheet" href="{h(prefix)}assets/css/academic.css">
+  <link rel="stylesheet" href="{h(prefix)}assets/css/academic.css?v={css_version}">
   <script src="{h(prefix)}assets/js/academic.js" defer></script>
 </head>
 <body data-page="{h(page)}">
@@ -455,7 +457,7 @@ def build():
 
 
 def source_signature():
-    paths = [ROOT / "content" / "site.json"]
+    paths = [ROOT / "content" / "site.json", ROOT / "assets/css/academic.css"]
     paths.extend((ROOT / "content" / "blog").glob("*.md"))
     signature = []
     for path in sorted(paths):
@@ -469,7 +471,7 @@ def source_signature():
 
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("--watch", action="store_true", help="Rebuild when post Markdown or site content changes; refresh the browser to see edits.")
+    parser.add_argument("--watch", action="store_true", help="Rebuild when post Markdown, site content, or CSS changes; refresh the browser to see edits.")
     args = parser.parse_args()
     try:
         build()
@@ -480,7 +482,7 @@ def main():
         # Keep watching if started while a Markdown file is still being edited.
     if not args.watch:
         return 0
-    print("Watching content/blog/ and site content. Refresh the browser after saving. Ctrl-C stops the watcher.", flush=True)
+    print("Watching content/blog/, site content, and CSS. Refresh the browser after saving. Ctrl-C stops the watcher.", flush=True)
     previous = source_signature()
     try:
         while True:
