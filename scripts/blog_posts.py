@@ -27,6 +27,7 @@ class BlogPost:
     tags: tuple[str, ...]
     draft: bool
     body: str
+    key_points: tuple[str, ...] = ()
 
 
 class _FrontMatterLoader(yaml.SafeLoader):
@@ -64,7 +65,7 @@ def _unique_mapping(loader, node):
 _FrontMatterLoader.add_constructor(
     yaml.resolver.BaseResolver.DEFAULT_MAPPING_TAG, _unique_mapping
 )
-_FIELDS = {"title", "date", "updated", "summary", "slug", "tags", "draft"}
+_FIELDS = {"title", "date", "updated", "summary", "slug", "tags", "draft", "key_points"}
 _SLUG = re.compile(r"[a-z0-9]+(?:-[a-z0-9]+)*\Z")
 _DATE = re.compile(r"\d{4}-\d{2}-\d{2}\Z")
 _TIMESTAMP = re.compile(
@@ -117,6 +118,12 @@ def _load_post(source):
                 raise BlogError(f"missing required field {field!r}")
         title = _text(metadata["title"], "title")
         summary = _text(metadata["summary"], "summary")
+        key_points = ()
+        if "key_points" in metadata:
+            points = metadata["key_points"]
+            if not isinstance(points, list) or not points:
+                raise BlogError("key_points must be a nonempty YAML list of nonempty strings; omit it to disable the summary block")
+            key_points = tuple(_text(point, "each key_points item") for point in points)
         slug = metadata.get("slug", source.stem)
         if not isinstance(slug, str) or not _SLUG.fullmatch(slug):
             raise BlogError("slug must contain lowercase letters/digits separated by single hyphens")
@@ -134,7 +141,7 @@ def _load_post(source):
         if type(draft) is not bool:
             raise BlogError("draft must be true or false (without quotes)")
         return BlogPost(source, slug, title, published, updated, summary, tags, draft,
-                        "".join(lines[end + 1:]))
+                        "".join(lines[end + 1:]), key_points=key_points)
     except yaml.YAMLError as exc:
         message = getattr(exc, "problem", None) or str(exc)
         mark = getattr(exc, "problem_mark", None)
@@ -178,6 +185,14 @@ def load_posts(directory: Path, *, include_drafts=False) -> list[BlogPost]:
     posts.sort(key=lambda post: post.slug)
     posts.sort(key=lambda post: _instant(post.date), reverse=True)
     return [post for post in posts if include_drafts or not post.draft]
+
+
+def render_key_point(text: str) -> str:
+    """Render emphasis/code within a summary item, without HTML or active URLs."""
+    markdown = MarkdownIt("commonmark", {"html": False}).disable(
+        ["link", "image", "autolink", "html_inline"]
+    )
+    return markdown.renderInline(text)
 
 
 def _safe_link(value):

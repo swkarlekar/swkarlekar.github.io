@@ -8,9 +8,9 @@ import unittest
 import yaml
 
 try:
-    from .blog_posts import BlogError, load_posts, read_post, reading_minutes, render_markdown
+    from .blog_posts import BlogError, BlogPost, load_posts, read_post, reading_minutes, render_key_point, render_markdown
 except ImportError:
-    from blog_posts import BlogError, load_posts, read_post, reading_minutes, render_markdown
+    from blog_posts import BlogError, BlogPost, load_posts, read_post, reading_minutes, render_key_point, render_markdown
 
 
 class HTML(HTMLParser):
@@ -90,6 +90,24 @@ print("<script>")
         self.assertEqual(reading_minutes('word ' * 200), 1)
         self.assertEqual(reading_minutes('word ' * 201), 2)
 
+    def test_summary_inline_formatting_supports_emphasis_and_code(self):
+        value = render_key_point('**A bold lead.** Then *emphasis* and `<script>` as code.')
+        self.assertEqual([tag for tag, attrs in HTML(value).elements], ['strong', 'em', 'code'])
+        self.assertIn('<strong>A bold lead.</strong>', value)
+        self.assertIn('<code>&lt;script&gt;</code>', value)
+
+    def test_summary_inline_formatting_cannot_create_html_links_images_or_blocks(self):
+        cases = ['<script>alert(1)</script> <img src=x onerror=alert(1)>',
+                 '[unsafe](javascript:alert(1)) ![image](https://example.org/image.png)',
+                 '[ordinary link](https://example.org/) <https://example.org/> <me@example.org>',
+                 '# Heading\n\n- list\n\n> quote', '```html\n<script>alert(1)</script>\n```']
+        allowed = {'strong', 'em', 'code', 'br'}
+        for text in cases:
+            with self.subTest(text=text):
+                value = render_key_point(text)
+                self.assertTrue(all(tag in allowed for tag, attrs in HTML(value).elements))
+                self.assertTrue(all(not attrs for tag, attrs in HTML(value).elements))
+
 
 class PostTests(unittest.TestCase):
     def setUp(self):
@@ -119,6 +137,44 @@ class PostTests(unittest.TestCase):
         self.assertEqual(load_posts(self.directory), [])
         post, = load_posts(self.directory, include_drafts=True)
         self.assertTrue(post.draft)
+
+    def test_absent_key_points_preserve_existing_posts_and_positional_constructor(self):
+        self.write()
+        post, = load_posts(self.directory)
+        self.assertEqual(post.key_points, ())
+        legacy = BlogPost(post.source, post.slug, post.title, post.date, post.updated,
+                          post.summary, post.tags, post.draft, post.body)
+        self.assertEqual(legacy.key_points, ())
+        self.assertEqual(legacy, post)
+
+    def test_key_points_accept_any_nonempty_list_including_five_points(self):
+        for points in [['One.'], [' First point. ', 'Second point.'],
+                       ['One.', 'Two.', 'Three.', 'Four.', 'Five.'], ['Point.'] * 12]:
+            with self.subTest(points=points):
+                metadata = dict(title='Example', date='2026-10-18', summary='Card teaser.',
+                                draft=False, key_points=points)
+                self.write(metadata=yaml.safe_dump(metadata))
+                post, = load_posts(self.directory)
+                self.assertEqual(post.key_points, tuple(point.strip() for point in points))
+                self.assertEqual(post.summary, 'Card teaser.')
+
+    def test_key_points_preserve_the_authored_inline_markdown(self):
+        points = ['<img src=x onerror="alert(1)"> & literal text', '**No Markdown rendering** or [link](javascript:evil)']
+        self.write(metadata=yaml.safe_dump(dict(title='Example', date='2026-10-18',
+                                               summary='Card teaser.', draft=False, key_points=points)))
+        post, = load_posts(self.directory)
+        self.assertEqual(post.key_points, tuple(points))
+
+    def test_invalid_key_points_fail_with_source_context(self):
+        for points in ['One scalar.', None, {}, [],
+                       ['Valid.', 7], ['Valid.', False], ['Valid.', None],
+                       ['Valid.', {'nested': 'value'}], ['Valid.', ''], ['Valid.', '  \n ']]:
+            with self.subTest(points=points):
+                path = self.write(metadata=yaml.safe_dump(dict(title='Example', date='2026-10-18',
+                                                               summary='Card teaser.', draft=False, key_points=points)))
+                with self.assertRaisesRegex(BlogError, 'key_points') as error:
+                    load_posts(self.directory)
+                self.assertIn(str(path), str(error.exception))
 
     def test_explicit_template_read_keeps_it_a_draft(self):
         path = self.write('_template.md', 'title: Example\ndate: 2026-10-18\nsummary: A template.\nslug: example')

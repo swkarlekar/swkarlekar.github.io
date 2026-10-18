@@ -3,6 +3,27 @@ title: "Could AI Safety Make AI Less Safe?"
 date: "2026-10-15"
 slug: "could-ai-safety-make-ai-less-safe"
 summary: "Discussing the idea that interventions designed to prevent one type of AI harm can inadvertently make another worse."
+key_points:
+  - >-
+    **Improving one dimension of AI safety could inadvertently make another worse.**
+    Interventions designed to prevent malicious misuse may introduce new risks as AI
+    systems become more capable and autonomous.
+  - >-
+    **Resistance to manipulation and receptiveness to correction may be competing objectives.**
+    Training models to resist jailbreaks and harmful requests could also make them
+    less responsive to legitimate human feedback.
+  - >-
+    **Stronger safety principles don't necessarily mean safer behavior.**
+    Models that become overly committed to their learned values might resist correction,
+    dismiss reasonable disagreement, or justify harmful actions in pursuit of supposedly beneficial goals.
+  - >-
+    **These risks are plausible, but need far more research.**
+    Existing research raises interesting concerns, but there is a big research gap in
+    understanding competing safety objectives.
+  - >-
+    **We should evaluate safety interventions for unintended consequences, not just their intended benefits.**
+    Making AI systems safer requires understanding how improvements against one category
+    of harm affect their behavior across other potential threats.
 tags: [Alignment]
 draft: false
 ---

@@ -3,6 +3,10 @@ title: "Your post title"
 date: "2026-10-18"
 slug: "your-post-title"
 summary: "Replace this with a short description of your post."
+# Optional: uncomment and edit points for a Summary box above the article.
+# key_points:
+#   - "The first main idea from this post."
+#   - "The second main idea from this post."
 tags: [Research]
 draft: true
 ---

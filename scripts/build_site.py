@@ -9,7 +9,7 @@ import sys
 import time
 
 try:
-    from blog_posts import BlogError, load_posts, read_post, reading_minutes, render_markdown
+    from blog_posts import BlogError, load_posts, read_post, reading_minutes, render_key_point, render_markdown
 except ModuleNotFoundError as error:
     raise SystemExit(
         "Missing build dependencies. Run .venv/bin/python -m pip install -r "
@@ -344,13 +344,24 @@ def post_tags(post):
     return '<ul class="blog-tags" aria-label="Topics">' + "".join(f'<li>{h(tag)}</li>' for tag in post.tags) + '</ul>'
 
 
+def post_reading_minutes(post):
+    return reading_minutes("\n".join((*post.key_points, post.body)))
+
+
+def post_summary(post):
+    if not post.key_points:
+        return ""
+    items = "".join(f'<li>{render_key_point(point)}</li>' for point in post.key_points)
+    return '<aside class="post-summary" aria-labelledby="article-summary-heading"><h2 id="article-summary-heading">Summary</h2><ul>' + items + '</ul></aside>'
+
+
 def blog_index(posts):
     rows = "".join(
         f'''<article class="blog-entry">
           <div class="blog-entry-date">{post_date(post.date)}</div>
           <div><h2><a href="posts/{h(post.slug)}.html">{h(post.title)}</a></h2>
           <p>{h(post.summary)}</p>{post_tags(post)}
-          <a class="blog-read-link" href="posts/{h(post.slug)}.html">Read post <span aria-hidden="true">·</span> {reading_minutes(post.body)} min read</a></div>
+          <a class="blog-read-link" href="posts/{h(post.slug)}.html">Read post <span aria-hidden="true">·</span> {post_reading_minutes(post)} min read</a></div>
         </article>''' for post in posts
     )
     if not rows:
@@ -371,8 +382,8 @@ def blog_post(post, *, preview=False):
         raise BlogError(f"{post.source}: {error}") from error
     body = f'''<article class="blog-post">
       <a class="blog-back" href="{prefix}blog.html">Back to Blog</a>{banner}
-      <header class="blog-post-heading"><p class="blog-meta">{post_date(post.date)}<span>{reading_minutes(post.body)} min read</span>{updated}</p>
-      <h1>{h(post.title)}</h1>{post_tags(post)}</header>
+      <header class="blog-post-heading"><p class="blog-meta">{post_date(post.date)}<span>{post_reading_minutes(post)} min read</span>{updated}</p>
+      <h1>{h(post.title)}</h1>{post_tags(post)}</header>{post_summary(post)}
       <div class="blog-prose">{content}</div>
     </article>'''
     return document(post.title, "blog", body, prefix=prefix, description=post.summary)

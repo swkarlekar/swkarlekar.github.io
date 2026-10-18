@@ -160,6 +160,50 @@ class BlogBuildTests(unittest.TestCase):
         self.assertFalse((self.root / 'posts/final-name.html').exists())
         self.assertIn('Posts coming soon.', (self.root / 'blog.html').read_text())
 
+    def test_optional_summary_is_escaped_before_prose_and_counts_toward_reading_time(self):
+        # The same 200-word body takes one minute alone; the summary moves it
+        # across that boundary without changing the body or the card teaser.
+        body = 'word ' * 200
+        source = self.post('with-summary.md', body=body, summary='A separate card teaser.')
+        metadata_text, original_body = source.read_text()[4:].split('---\n', 1)
+        metadata = yaml.safe_load(metadata_text)
+        metadata['key_points'] = ['<img src=x onerror="alert(1)"> **A literal point.**',
+                                  '<script>evil()</script> & **Safe formatting.**',
+                                  '**Third point.** Inline emphasis is *safe*.',
+                                  '**Fourth point.** Inline code is `safe`.',
+                                  '**Fifth point.** [Links](javascript:evil) stay inactive.']
+        source.write_text('---\n' + yaml.safe_dump(metadata) + '---\n' + original_body)
+        self.post('without-summary.md', body=body)
+        self.build()
+
+        html = (self.root / 'posts/with-summary.html').read_text()
+        page = Page(html)
+        self.assertIn(('aside', {'class': 'post-summary', 'aria-labelledby': 'article-summary-heading'}), page.elements)
+        self.assertIn(('h2', {'id': 'article-summary-heading'}), page.elements)
+        self.assertLess(html.index('class="post-summary"'), html.index('class="blog-prose"'))
+        self.assertIn('&lt;img src=x onerror=&quot;alert(1)&quot;&gt;', html)
+        self.assertIn('&lt;script&gt;evil()&lt;/script&gt; &amp; <strong>Safe formatting.</strong>', html)
+        summary = html.split('<aside class="post-summary"', 1)[1].split('</aside>', 1)[0]
+        self.assertEqual(summary.count('<li>'), 5)
+        self.assertEqual(summary.count('<strong>'), 5)
+        self.assertIn('<em>safe</em>', summary)
+        self.assertIn('<code>safe</code>', summary)
+        self.assertNotIn('<a ', summary)
+        self.assertNotIn('img', [tag for tag, attrs in page.elements])
+        self.assertEqual(sum(tag == 'script' for tag, attrs in page.elements), 1)
+        self.assertTrue(all(not key.startswith('on') for tag, attrs in page.elements for key in attrs))
+        self.assertIn('<span>2 min read</span>', html)
+
+        without = (self.root / 'posts/without-summary.html').read_text()
+        self.assertNotIn('class="post-summary"', without)
+        self.assertNotIn('article-summary-heading', without)
+        self.assertIn('<span>1 min read</span>', without)
+        index = (self.root / 'blog.html').read_text()
+        self.assertIn('A separate card teaser.', index)
+        self.assertIn('·</span> 2 min read', index)
+        self.assertIn('·</span> 1 min read', index)
+        self.assertNotIn('Safe formatting.', index)
+
     def test_handwritten_page_survives_and_cannot_be_overwritten_or_packaged(self):
         (self.root / 'posts').mkdir()
         path = self.root / 'posts/handwritten.html'

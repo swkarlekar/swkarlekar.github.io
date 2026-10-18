@@ -19,6 +19,15 @@ Use `.venv/bin/python scripts/build_site.py --watch` to rebuild automatically wh
 ## Metadata
 
 - `title`, `date`, and `summary` are required. The summary is a short description for the blog index.
+- `key_points` is optional: a nonempty list of bullet points for a colored Summary box at the beginning of the article. It is separate from the short `summary` shown on the Blog index. Bold (`**text**`), emphasis (`*text*`), and inline code are supported. For example:
+
+  ```yaml
+  key_points:
+    - "**The first main idea.** Explain it briefly here."
+    - "**The second main idea.** Explain it briefly here."
+  ```
+
+  Leave this field out for posts that do not need a Summary box. These points are included in the reading-time estimate. Links, images, and raw HTML are not rendered within summary points.
 - `date` accepts `YYYY-MM-DD` or an ISO timestamp with a timezone, such as `2026-10-18T14:30:00-04:00`. Quote dates in the YAML. Posts appear latest first by publication date.
 - `slug` is optional and controls the final URL; by default it is the filename without `.md`. Use lowercase letters and numbers separated by single hyphens. Changing a filename or slug can change the URL; retain an explicit slug when renaming a file to keep its URL stable.
 - `updated` is optional and accepts the same formats as `date`.
