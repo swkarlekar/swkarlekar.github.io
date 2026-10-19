@@ -1,0 +1,5 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="26" height="26" viewBox="0 0 32 32" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path d="M6 5V25L11 20L15 29L19 27L15 19H22Z" transform="translate(-1.5 -1.5)" stroke="#edb8b1" stroke-width="1.1"/>
+  <path d="M6 5V25L11 20L15 29L19 27L15 19H22Z" transform="translate(1.5 1.5)" stroke="#49c8ff" stroke-width="1.1"/>
+  <path d="M6 5V25L11 20L15 29L19 27L15 19H22Z" fill="#16191c" stroke="#fff" stroke-width="1.15"/>
+</svg>

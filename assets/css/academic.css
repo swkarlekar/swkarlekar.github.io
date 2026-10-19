@@ -222,3 +222,31 @@ pre{font-size:10px;line-height:1.8;background:var(--canvas);padding:17px;overflo
 @media(max-width:680px){.beyond img{object-position:center 35%}}
 @media print{.about-main,.beyond{box-shadow:none;padding:0}}
 @media(max-width:360px){nav{gap:7px}.theme-toggle{flex:0 0 28px}}
+
+/* Static cursors keep movement native; text and accessibility modes retain their usual cursors. */
+:root {
+  --cursor-arrow:url('../cursors/arrow.svg?v=black26') 5 4;
+  --cursor-pointer:url('../cursors/pointer.svg?v=black26') 11 3;
+}
+:root[data-theme=dark] {
+  --cursor-arrow:url('../cursors/arrow-white.svg?v=white26') 5 4;
+  --cursor-pointer:url('../cursors/pointer-white.svg?v=white26') 11 3;
+}
+@media (prefers-color-scheme:dark) {
+  :root:not([data-theme=light]) {
+    --cursor-arrow:url('../cursors/arrow-white.svg?v=white26') 5 4;
+    --cursor-pointer:url('../cursors/pointer-white.svg?v=white26') 11 3;
+  }
+}
+@media (hover:hover) and (pointer:fine) and (forced-colors:none) {
+  body {cursor:var(--cursor-arrow),auto}
+  :where(p,h1,h2,h3,h4,h5,h6,li,dt,dd,blockquote,pre,code,figcaption) {cursor:text}
+  a[href],button,.theme-toggle,summary,.publication-details summary,select,[role=button] {
+    cursor:var(--cursor-pointer),pointer;
+  }
+  input,textarea,[contenteditable=""],[contenteditable=true] {cursor:text}
+  input[type=button],input[type=submit],input[type=reset],input[type=checkbox],input[type=radio] {
+    cursor:var(--cursor-pointer),pointer;
+  }
+  :disabled,[aria-disabled=true] {cursor:not-allowed}
+}
