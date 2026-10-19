@@ -4,6 +4,8 @@ from html import escape
 import re
 from urllib.parse import urlsplit
 
+from blog_posts import render_key_point
+
 
 def _h(value):
     return escape(str(value), quote=True)
@@ -55,10 +57,10 @@ def _link(label, href, css="safety-link", symbol=None):
     return f'<a class="{_h(css)}" href="{_h(href)}"{target}>{glyph}<span>{_h(label)}</span></a>'
 
 
-def _paragraphs(value, css=""):
+def _paragraphs(value, css="", *, inline=False):
     attribute = f' class="{_h(css)}"' if css else ""
     return "".join(
-        f"<p{attribute}>{_h(part.strip())}</p>"
+        f"<p{attribute}>{render_key_point(part.strip()) if inline else _h(part.strip())}</p>"
         for part in str(value).split("\n\n")
         if part.strip()
     )
@@ -115,7 +117,7 @@ def _resource_card(resource, level=3):
         f'<p class="safety-resource-meta">{_h(resource["meta"])}</p>'
         if resource.get("meta") else ""
     )
-    description = _paragraphs(resource.get("description", ""), "safety-resource-description")
+    description = _paragraphs(resource.get("description", ""), "safety-resource-description", inline=True)
     return (
         '<article class="safety-resource-card">'
         f"{meta}<h{level}>{title}</h{level}>{description}</article>"

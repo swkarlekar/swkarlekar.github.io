@@ -9,10 +9,9 @@ from pathlib import Path
 import sys
 import time
 
-from safety_page import render_safety_page
-
 try:
     from blog_posts import BlogError, load_posts, read_post, reading_minutes, render_key_point, render_markdown
+    from safety_page import render_safety_page
 except ModuleNotFoundError as error:
     raise SystemExit(
         "Missing build dependencies. Run .venv/bin/python -m pip install -r "

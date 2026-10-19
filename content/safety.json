@@ -29,19 +29,13 @@
       "date": "2018–2019",
       "label": "Google AI Research Mentoring Program",
       "title": "Research mentorship in interpretability",
-      "description": "Through the Google AI Research Mentoring Program, I was mentored by Been Kim on interpretability and democratizing deep learning models.",
-      "resources": [
-        {
-          "label": "Experience on my CV",
-          "url": "cv.html"
-        }
-      ]
+      "description": "Through the Google AI Research Mentoring Program, I was mentored by Been Kim on interpretability and democratizing deep learning models."
     },
     {
       "id": "meta-genai-safety",
       "date": "2022–2023",
       "label": "Applied ML Research Engineer · Meta",
-      "title": "Generative AI safety in practice",
+      "title": "Generative AI Safety at Meta",
       "description": "I worked on AI-generated stickers in Meta’s Productionizing AI Research (PAIR) team, which led Meta’s early Generative AI efforts. As a lead engineer, I focused on making the product safer and more responsible, reducing stereotypes, and improving diversity in model outputs.",
       "bullets": [
         "Used prompt expansion, fine-tuning, and large language models (LLMs) to improve representation in generated outputs.",
@@ -94,7 +88,7 @@
         "care": {
           "links": [
             {
-              "label": "Paper",
+              "label": "Google Drive link",
               "url": "https://drive.google.com/file/d/1Kxj51zKXtQKDuouSxtZ78RuAcmaPxScJ/view?usp=sharing"
             }
           ],
@@ -138,7 +132,7 @@
           "label": "Intro to Mechanistic Interpretability",
           "url": "files/intro_to_mech_interp.pdf",
           "meta": "Teaching & guest lecture",
-          "description": "Presented for Frontiers of Machine Learning while I was a TA for Carl Vondrick’s COMS 6998 class in Fall 2024, and as a guest lecture for the Columbia AI Alignment Club."
+          "description": "Presented for Frontiers of Machine Learning while I was a TA for Carl Vondrick’s COMS 6998 class in Fall 2024, and as a guest lecture for the **Columbia AI Alignment Club**."
         }
       ]
     }

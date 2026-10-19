@@ -11,7 +11,7 @@ The active site uses the academic layout at the repository root. It is a small, 
 - Set `selected_publications` to the publication IDs to feature on the homepage, in display order. The Publications page retains the full list.
 - Edit page structure and introductory prose in `scripts/build_site.py`.
 - Edit appearance in `assets/css/academic.css` and optional theme/search behavior in `assets/js/academic.js`.
-- Edit the standalone AI safety page’s timeline and selected resources in `content/safety.json`; its appearance is in `assets/css/safety.css` and structure in `scripts/safety_page.py`. Publication titles and links come from `content/site.json`, and selected blog titles, dates, and descriptions come from their Markdown metadata.
+- Edit the standalone AI safety page’s timeline and selected resources in `content/safety.json`; its appearance is in `assets/css/safety.css` and structure in `scripts/safety_page.py`. Publication titles and links come from `content/site.json`, and selected blog titles, dates, and descriptions come from their Markdown metadata. Resource descriptions support safe inline Markdown emphasis, such as `**bold text**`.
 - Rebuild the six main HTML pages, standalone AI safety page, blog posts, and bibliography with `.venv/bin/python scripts/build_site.py`.
 - Preview locally with `python3 -m http.server 4173 --bind 127.0.0.1`, then open `http://127.0.0.1:4173/`.
 
