@@ -10,6 +10,7 @@ import sys
 import tempfile
 import unittest
 from unittest.mock import patch
+from urllib.parse import unquote, urlsplit
 
 import yaml
 
@@ -34,7 +35,7 @@ class Page(HTMLParser):
         attrs = dict(attrs)
         self.elements.append((tag, attrs))
         if tag == 'nav':
-            self._in_nav = True
+            self._in_nav = attrs.get('aria-label') == 'Main navigation'
         if self._in_nav and tag == 'a':
             self.navigation.append(attrs)
 
@@ -52,6 +53,7 @@ class BlogBuildTests(unittest.TestCase):
         self.sources.mkdir(parents=True)
         actual_data = json.loads((REPOSITORY / 'content/site.json').read_text())
         (self.root / 'content/site.json').write_text(json.dumps(actual_data))
+        (self.root / 'content/safety.json').write_bytes((REPOSITORY / 'content/safety.json').read_bytes())
         build_paths = patch.multiple(builder, ROOT=self.root, DEST=self.root,
                                      DATA=copy.deepcopy(actual_data), PROFILE=copy.deepcopy(actual_data['profile']))
         build_paths.start()
@@ -69,6 +71,11 @@ class BlogBuildTests(unittest.TestCase):
             path = self.root / directory
             path.mkdir(parents=True, exist_ok=True)
             (path / 'LICENSE.txt').write_text('Fixture license.\n')
+        # Preserve real link targets and icon IDs without copying large PDFs.
+        for source in (REPOSITORY / 'files').glob('*.pdf'):
+            (self.root / 'files' / source.name).write_bytes(b'PDF download fixture\n')
+        (self.root / 'assets/icons/sprite.svg').write_bytes(
+            (REPOSITORY / 'assets/icons/sprite.svg').read_bytes())
 
     def post(self, name='post.md', *, slug=None, draft=False, published='2026-10-18',
              title='A real test post', summary='A useful summary.', tags=None, body='## Heading\n\nSome writing.\n'):
@@ -159,6 +166,121 @@ class BlogBuildTests(unittest.TestCase):
             self.assertNotEqual(href, original_urls[name])
             self.assertEqual(href.split('?', 1)[0], original_urls[name].split('?', 1)[0])
         self.assertEqual(len({href.split('?', 1)[1] for href in stylesheet_urls().values()}), 1)
+
+    def test_safety_page_stays_unlisted_with_valid_links_and_separate_packaged_style(self):
+        self.post('public.md', slug='could-ai-safety-make-ai-less-safe')
+        self.build()
+        safety_path = self.root / 'ai-safety.html'
+        page = Page(safety_path.read_text())
+        robots = next(attrs['content'] for tag, attrs in page.elements
+                      if tag == 'meta' and attrs.get('name') == 'robots')
+        self.assertEqual({value.strip() for value in robots.split(',')}, {'noindex', 'follow'})
+        csp = [attrs['content'] for tag, attrs in page.elements
+               if tag == 'meta' and attrs.get('http-equiv') == 'Content-Security-Policy']
+        self.assertEqual(len(csp), 1)
+        for directive in ["default-src 'none'", "script-src 'self'", "style-src 'self'",
+                          "base-uri 'none'", "form-action 'none'", "object-src 'none'"]:
+            self.assertIn(directive, csp[0].split('; '))
+
+        navigation = ['index.html', 'publications.html', 'cv.html',
+                      'awards.html', 'blog.html', 'projects.html']
+        self.assertEqual([attrs['href'] for attrs in page.navigation], navigation)
+        main_pages = ['index.html', 'publications.html', 'cv.html',
+                      'awards.html', 'blog.html', 'projects.html']
+        for name in main_pages:
+            main = Page((self.root / name).read_text())
+            self.assertEqual([attrs['href'] for attrs in main.navigation], navigation)
+            self.assertFalse(any(tag == 'a' and attrs.get('href') == 'ai-safety.html'
+                                 for tag, attrs in main.elements))
+            self.assertFalse(any(tag == 'link' and 'safety.css' in attrs.get('href', '')
+                                 for tag, attrs in main.elements))
+
+        ids = [attrs['id'] for tag, attrs in page.elements if 'id' in attrs]
+        self.assertEqual(len(ids), len(set(ids)))
+        for tag, attrs in page.elements:
+            for attribute in ['aria-labelledby', 'aria-describedby']:
+                for identifier in attrs.get(attribute, '').split():
+                    self.assertIn(identifier, ids)
+            for attribute in ['href', 'src']:
+                if attribute not in attrs:
+                    continue
+                address = urlsplit(attrs[attribute])
+                if address.scheme or address.netloc:
+                    continue
+                target = (safety_path.parent / unquote(address.path)).resolve() if address.path else safety_path
+                self.assertTrue(target.is_relative_to(self.root), attrs[attribute])
+                self.assertTrue(target.is_file(), attrs[attribute])
+                if address.fragment:
+                    target_ids = {attributes['id'] for _, attributes in Page(target.read_text()).elements
+                                  if 'id' in attributes}
+                    self.assertIn(unquote(address.fragment), target_ids, attrs[attribute])
+
+        def stylesheets():
+            return [attrs['href'] for tag, attrs in Page(safety_path.read_text()).elements
+                    if tag == 'link' and attrs.get('rel') == 'stylesheet']
+
+        original_styles = stylesheets()
+        self.assertEqual(len(original_styles), 2)
+        safety_css = self.root / 'assets/css/safety.css'
+        version = hashlib.sha256(safety_css.read_bytes()).hexdigest()[:12]
+        self.assertEqual(original_styles[1], 'assets/css/safety.css?v=' + version)
+        main_before = (self.root / 'index.html').read_bytes()
+        signature = builder.source_signature()
+        safety_css.write_text('.safety-page { color: navy; }\n')
+        self.assertNotEqual(builder.source_signature(), signature)
+        self.build()
+        self.assertEqual(stylesheets()[0], original_styles[0])
+        self.assertNotEqual(stylesheets()[1], original_styles[1])
+        self.assertEqual((self.root / 'index.html').read_bytes(), main_before)
+
+        source = self.root / 'scripts/safety_page.py'
+        source.parent.mkdir()
+        source.write_text('PRIVATE-SAFETY-RENDERER-SOURCE\n')
+        packager.package_site()
+        output = self.root / 'dist'
+        entries = {entry['path'] for entry in json.loads((output / packager.MARKER_NAME).read_text())['files']}
+        for name in ['ai-safety.html', 'assets/css/safety.css']:
+            self.assertIn(name, entries)
+            self.assertEqual((output / name).read_bytes(), (self.root / name).read_bytes())
+        self.assertNotIn('content/safety.json', entries)
+        self.assertNotIn('scripts/safety_page.py', entries)
+
+    def test_safety_writing_uses_current_metadata_and_never_links_requested_drafts(self):
+        source = self.root / 'content/safety.json'
+        content = json.loads(source.read_text())
+        content['writing']['post_slugs'] = ['selected-public', 'selected-draft', 'missing-post']
+        source.write_text(json.dumps(content))
+        self.post('public.md', slug='selected-public', title='Original public title',
+                  summary='Original public summary.', published='2026-09-17')
+        self.post('draft.md', slug='selected-draft', draft=True,
+                  title='PRIVATE-DRAFT-TITLE', summary='PRIVATE-DRAFT-SUMMARY')
+        self.build()
+        self.assertIn('Original public title', (self.root / 'ai-safety.html').read_text())
+
+        self.post('public.md', slug='selected-public', title='Updated title & direction',
+                  summary='Updated public summary.', published='2026-10-18')
+        self.build()
+        html = (self.root / 'ai-safety.html').read_text()
+        post_links = [attrs['href'] for tag, attrs in Page(html).elements
+                      if tag == 'a' and attrs.get('href', '').startswith('posts/')]
+        self.assertEqual(post_links, ['posts/selected-public.html'])
+        self.assertIn('Updated title &amp; direction', html)
+        self.assertIn('Updated public summary.', html)
+        self.assertIn('October 2026', html)
+        for private_or_stale in ['Original public title', 'Original public summary.',
+                                 'PRIVATE-DRAFT-TITLE', 'PRIVATE-DRAFT-SUMMARY',
+                                 'posts/selected-draft.html', 'posts/missing-post.html']:
+            self.assertNotIn(private_or_stale, html)
+        self.assertFalse((self.root / 'posts/selected-draft.html').exists())
+
+        self.post('public.md', slug='selected-public', draft=True,
+                  title='No longer public', summary='This is now a private draft.')
+        self.build()
+        html = (self.root / 'ai-safety.html').read_text()
+        self.assertFalse(any(tag == 'a' and attrs.get('href', '').startswith('posts/')
+                             for tag, attrs in Page(html).elements))
+        self.assertNotIn('id="writing"', html)
+        self.assertNotIn('No longer public', html)
 
     def test_draft_publication_rename_and_deletion_remove_obsolete_pages(self):
         self.post(draft=True, slug='original')

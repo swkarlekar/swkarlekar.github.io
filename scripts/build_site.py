@@ -9,6 +9,8 @@ from pathlib import Path
 import sys
 import time
 
+from safety_page import render_safety_page
+
 try:
     from blog_posts import BlogError, load_posts, read_post, reading_minutes, render_key_point, render_markdown
 except ModuleNotFoundError as error:
@@ -64,8 +66,13 @@ def link(label, href, css="", new=False, asset_prefix=""):
     return f'<a class="{h(css)} icon-link" href="{h(url(href))}"{target}>{glyph}<span>{h(label)}</span></a>'
 
 
-def document(title, page, body, *, prefix="", description=None):
+def document(title, page, body, *, prefix="", description=None, stylesheets=(), noindex=False):
     css_version = hashlib.sha256((ROOT / "assets/css/academic.css").read_bytes()).hexdigest()[:12]
+    extra_styles = "".join(
+        f'\n  <link rel="stylesheet" href="{h(prefix + path)}?v={hashlib.sha256((ROOT / path).read_bytes()).hexdigest()[:12]}">'
+        for path in stylesheets
+    )
+    robots = '\n  <meta name="robots" content="noindex, follow">' if noindex else ""
     nav = "".join(
         f'<a href="{h(prefix + href)}"' + (' aria-current="page"' if key == page else "") + f'>{label}</a>'
         for key, href, label in [("about", "index.html", "About"), ("publications", "publications.html", "Publications"),
@@ -80,11 +87,11 @@ def document(title, page, body, *, prefix="", description=None):
   <meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'self'; style-src 'self'; img-src 'self' data:; font-src 'self'; base-uri 'none'; form-action 'none'; object-src 'none'">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="referrer" content="strict-origin-when-cross-origin">
-  <meta name="description" content="{h(description)}">
+  <meta name="description" content="{h(description)}">{robots}
   <meta name="theme-color" content="#f4f4f4">
   <title>{h(title)} · Sweta Karlekar</title>
   <link rel="icon" href="{h(prefix)}images/optimized/favicon-64.png" type="image/png">
-  <link rel="stylesheet" href="{h(prefix)}assets/css/academic.css?v={css_version}">
+  <link rel="stylesheet" href="{h(prefix)}assets/css/academic.css?v={css_version}">{extra_styles}
   <script src="{h(prefix)}assets/js/academic.js" defer></script>
 </head>
 <body data-page="{h(page)}">
@@ -420,6 +427,29 @@ def write_blog_pages(directory, pages):
         path.unlink()
 
 
+def safety_page(posts):
+    content = json.loads((ROOT / "content" / "safety.json").read_text())
+    writing = content.get("writing")
+    if writing:
+        published = {post.slug: post for post in posts}
+        resources = []
+        for slug in writing["post_slugs"]:
+            if slug not in published:
+                continue
+            post = published[slug]
+            resources.append({
+                "label": post.title, "url": f"posts/{post.slug}.html",
+                "description": post.summary,
+                "meta": post.date.strftime("%B %Y"),
+            })
+        if resources:
+            content.setdefault("sections", []).append({**writing, "resources": resources})
+    return document(
+        content["title"], "safety", render_safety_page(DATA, content, posts),
+        description=content["intro"], stylesheets=("assets/css/safety.css",), noindex=True,
+    )
+
+
 def build():
     global DATA, PROFILE
     DATA = json.loads((ROOT / "content" / "site.json").read_text())
@@ -427,6 +457,7 @@ def build():
     all_posts = load_posts(ROOT / "content" / "blog", include_drafts=True)
     posts = [post for post in all_posts if not post.draft]
     # Render and validate everything before replacing any generated page.
+    safety_html = safety_page(posts)
     public_pages = {post.slug + ".html": blog_post(post) for post in posts}
     draft_pages = {"post-" + post.slug + ".html": blog_post(post, preview=True) for post in all_posts if post.draft}
     template = ROOT / "content" / "blog" / "_template.md"
@@ -446,6 +477,7 @@ def build():
                                        ("awards.html", "Awards & features", "awards", awards()),
                                        ("blog.html", "Blog", "blog", blog_index(posts))]:
         (DEST / filename).write_text(document(title, key, body))
+    (DEST / "ai-safety.html").write_text(safety_html)
     (DEST / "publications.bib").write_text("\n\n".join(bibtex(paper) for paper in DATA["publications"]) + "\n")
     # Preserve links to the local design study after promoting it to the root.
     aliases = ROOT / "academic"
@@ -453,11 +485,12 @@ def build():
     for filename in ("index.html", "publications.html", "projects.html", "cv.html", "awards.html"):
         (aliases / filename).write_text('<!doctype html>\n<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><meta http-equiv="refresh" content="0;url=../' + filename + '"><title>Sweta Karlekar</title></head><body><p>This page has moved to <a href="../' + filename + '">the main website</a>.</p></body></html>\n')
     (aliases / "publications.bib").write_text((DEST / "publications.bib").read_text())
-    print(f"Built six website pages, {len(posts)} blog posts, local draft previews, and the bibliography.", flush=True)
+    print(f"Built six main pages, the standalone AI safety page, {len(posts)} blog posts, local draft previews, and the bibliography.", flush=True)
 
 
 def source_signature():
-    paths = [ROOT / "content" / "site.json", ROOT / "assets/css/academic.css"]
+    paths = [ROOT / "content" / "site.json", ROOT / "content" / "safety.json",
+             ROOT / "assets/css/academic.css", ROOT / "assets/css/safety.css"]
     paths.extend((ROOT / "content" / "blog").glob("*.md"))
     signature = []
     for path in sorted(paths):
@@ -475,7 +508,7 @@ def main():
     args = parser.parse_args()
     try:
         build()
-    except (BlogError, OSError, json.JSONDecodeError) as error:
+    except (BlogError, OSError, ValueError) as error:
         print(f"Build failed: {error}", file=sys.stderr)
         if not args.watch:
             return 1
@@ -493,7 +526,7 @@ def main():
             previous = current
             try:
                 build()
-            except (BlogError, OSError, json.JSONDecodeError) as error:
+            except (BlogError, OSError, ValueError) as error:
                 print(f"Build failed; fix the source and save again: {error}", file=sys.stderr, flush=True)
     except KeyboardInterrupt:
         return 0

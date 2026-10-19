@@ -11,10 +11,13 @@ The active site uses the academic layout at the repository root. It is a small, 
 - Set `selected_publications` to the publication IDs to feature on the homepage, in display order. The Publications page retains the full list.
 - Edit page structure and introductory prose in `scripts/build_site.py`.
 - Edit appearance in `assets/css/academic.css` and optional theme/search behavior in `assets/js/academic.js`.
-- Rebuild the six main HTML pages, blog posts, and bibliography with `.venv/bin/python scripts/build_site.py`.
+- Edit the standalone AI safety page’s timeline and selected resources in `content/safety.json`; its appearance is in `assets/css/safety.css` and structure in `scripts/safety_page.py`. Publication titles and links come from `content/site.json`, and selected blog titles, dates, and descriptions come from their Markdown metadata.
+- Rebuild the six main HTML pages, standalone AI safety page, blog posts, and bibliography with `.venv/bin/python scripts/build_site.py`.
 - Preview locally with `python3 -m http.server 4173 --bind 127.0.0.1`, then open `http://127.0.0.1:4173/`.
 
 Generated pages are committed so GitHub Pages can serve them without installing a build tool. The `academic/` HTML files redirect earlier design-preview links to the main pages. The original homepage's research and awards fragments are also forwarded to their new pages.
+
+`ai-safety.html` is a standalone portfolio of safety and interpretability work, with a selected-CV timeline, talks, and writing. It is omitted from the main navigation and has a `noindex` directive. It can be shared directly once published; it is an ordinary public page, not access controlled.
 
 ## Blog
 
@@ -41,7 +44,7 @@ Or keep a content watcher running in a separate terminal:
 .venv/bin/python scripts/build_site.py --watch
 ```
 
-The watcher rebuilds when Markdown or `content/site.json` changes. Refresh the browser after saving. It does not start a server, commit, sync, or publish anything. The usual local server remains `python3 -m http.server 4173 --bind 127.0.0.1`. Open `/blog.html` for the public layout or `/preview/blog/` for draft previews.
+The watcher rebuilds when Markdown, `content/site.json`, `content/safety.json`, or either stylesheet changes. Refresh the browser after saving. It does not start a server, commit, sync, or publish anything. The usual local server remains `python3 -m http.server 4173 --bind 127.0.0.1`. Open `/blog.html` for the public layout or `/preview/blog/` for draft previews.
 
 Build-only dependencies are pinned in `requirements-build.txt`: [markdown-it-py](https://pypi.org/project/markdown-it-py/) renders Markdown, [PyYAML](https://pypi.org/project/PyYAML/) reads metadata, and `mdurl` is the Markdown parser's URL dependency. The isolated environment, source Markdown, and build dependencies are excluded from the published site. Raw HTML is displayed as text; post images use local paths. Put public blog images directly in `images/blog/` and reference them as `/images/blog/example.webp`.
 

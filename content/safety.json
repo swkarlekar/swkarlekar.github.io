@@ -1,0 +1,155 @@
+{
+  "title": "AI safety & interpretability",
+  "intro": "I’m a Ph.D. student in Computer Science at Columbia University, advised by David Blei. My work focuses on understanding what language models learn, measuring their behavior reliably, and investigating how they can become safer and better aligned with human intentions.",
+  "focus": [
+    "Mechanistic interpretability",
+    "Robust concept representations",
+    "AI safety & alignment"
+  ],
+  "timeline": [
+    {
+      "id": "social-good-interpretability",
+      "date": "2017–2018",
+      "label": "Undergraduate research · UNC Chapel Hill",
+      "title": "Interpreting neural models for social good",
+      "description": "Working with Mohit Bansal, I used interpretability techniques to investigate deep learning models applied to Alzheimer’s dementia and personal accounts of harassment and abuse. These projects used model explanations to uncover linguistic patterns and examine what neural classifiers had learned.",
+      "paper_ids": [
+        "alzheimers-language",
+        "safecity",
+        "metoo-abuse-stories"
+      ],
+      "paper_summaries": {
+        "alzheimers-language": "Used activation clustering, pattern discovery, and first-derivative saliency to investigate linguistic characteristics of Alzheimer’s dementia and limitations of neural classifiers.",
+        "safecity": "Used LIME, saliency, activation clustering, and embedding visualization to interpret predictions about different forms of sexual harassment.",
+        "metoo-abuse-stories": "Interpreted neural classifiers of personal abuse stories using activation clustering to discover linguistic features."
+      }
+    },
+    {
+      "id": "google-ai-mentoring",
+      "date": "2018–2019",
+      "label": "Google AI Research Mentoring Program",
+      "title": "Research mentorship in interpretability",
+      "description": "Through the Google AI Research Mentoring Program, I was mentored by Been Kim on interpretability and democratizing deep learning models.",
+      "resources": [
+        {
+          "label": "Experience on my CV",
+          "url": "cv.html"
+        }
+      ]
+    },
+    {
+      "id": "meta-genai-safety",
+      "date": "2022–2023",
+      "label": "Applied ML Research Engineer · Meta",
+      "title": "Generative AI safety in practice",
+      "description": "I worked on AI-generated stickers in Meta’s Productionizing AI Research (PAIR) team, which led Meta’s early Generative AI efforts. As a lead engineer, I focused on making the product safer and more responsible, reducing stereotypes, and improving diversity in model outputs.",
+      "bullets": [
+        "Used prompt expansion, fine-tuning, and large language models (LLMs) to improve representation in generated outputs.",
+        "In offline tests, increased gender diversity by approximately 30%, disability representation by approximately 12%, and skin tone diversity by approximately 6%.",
+        "Coordinated cross-functional teams on safety mitigation plans and roadmaps, led weekly syncs, tracked progress across multiple teams, and communicated results to leadership and partner teams."
+      ],
+      "resources": [
+        {
+          "label": "Full CV",
+          "url": "files/Karlekar_Sweta_research_CV_2026_fall.pdf"
+        },
+        {
+          "label": "LinkedIn",
+          "url": "https://www.linkedin.com/in/swetakarlekar/"
+        }
+      ]
+    },
+    {
+      "id": "phd-interpretability",
+      "date": "2023–present",
+      "label": "Ph.D. research · Columbia University",
+      "title": "Understanding and measuring language models",
+      "description": "With David Blei, I study how concepts are represented in language models, how to measure them under distribution shift, and what model internals can tell us about reliability and alignment. My research connects mechanistic interpretability with probabilistic modeling and robust generalization.",
+      "paper_summaries": {
+        "care": "Introduces CARE, which separates shared concept directions from context-specific residuals. Evaluations include harmful-prompt refusal and toxicity, studying both measurement and intervention under distribution shift.",
+        "robust-representations": "Workshop work on CARE: extracting concept directions that remain useful for measurement and intervention across environments, including harmful-prompt detection.",
+        "mechanistic-topic-models": "Builds topic models over interpretable sparse-autoencoder features, connecting semantic analysis with controllable text generation through topic steering.",
+        "hallucination-rate": "Develops a method for estimating hallucination rates in generative AI for in-context learning, without requiring ground-truth labels for each generated response."
+      },
+      "work": [
+        {
+          "paper_id": "hallucination-rate"
+        },
+        {
+          "label": "Exploratory project: text-based interventions",
+          "url": "projects.html#text-based-interventions",
+          "description": "Tests the linear representation hypothesis by comparing how concept changes in text relate to changes in LLM activations."
+        },
+        {
+          "paper_id": "mechanistic-topic-models"
+        },
+        {
+          "paper_id": "robust-representations"
+        },
+        {
+          "paper_id": "care"
+        }
+      ],
+      "paper_overrides": {
+        "care": {
+          "links": [
+            {
+              "label": "Paper",
+              "url": "https://drive.google.com/file/d/1Kxj51zKXtQKDuouSxtZ78RuAcmaPxScJ/view?usp=sharing"
+            }
+          ],
+          "availability_note": "This is not the camera-ready version; the paper will be on arXiv soon."
+        }
+      }
+    },
+    {
+      "id": "ai-ethics-fellowship",
+      "date": "September 2026",
+      "label": "Division of Ethics · Columbia University",
+      "title": "Columbia AI Ethics Fellow",
+      "description": "Selected for Columbia’s AI Ethics Fellowship; joined the Fall 2026 cohort.",
+      "resources": [
+        {
+          "label": "About the fellowship",
+          "url": "https://www.mhe.cuimc.columbia.edu/news/call-applications-division-ethics-ai-fellows-fall-2026"
+        }
+      ]
+    }
+  ],
+  "sections": [
+    {
+      "id": "talks-and-teaching",
+      "title": "Talks & teaching",
+      "description": "A selection of presentations on mechanistic interpretability, model behavior, and alignment.",
+      "resources": [
+        {
+          "label": "A Mechanistic Interpretability Lens on Many Shot Jailbreaking",
+          "url": "files/mech_interp_lens_msj.pdf",
+          "meta": "LLM Interpretability and Alignment",
+          "description": "Explores hypotheses about many-shot jailbreaking through in-context learning, refusal directions, and persona shifts, with proposed experiments."
+        },
+        {
+          "label": "“A Mathematical Framework for Transformer Circuits” (Elhage et al., 2021)",
+          "url": "files/math_framework_for_transformers.pdf",
+          "meta": "Theoretical Foundations of LLMs · Joint presentation",
+          "description": "Presented with Nicolas Beltran-Velez. Introduces residual streams, attention-head computations, induction heads, and circuit ablation."
+        },
+        {
+          "label": "Intro to Mechanistic Interpretability",
+          "url": "files/intro_to_mech_interp.pdf",
+          "meta": "Teaching & guest lecture",
+          "description": "Presented for Frontiers of Machine Learning while I was a TA for Carl Vondrick’s COMS 6998 class in Fall 2024, and as a guest lecture for the Columbia AI Alignment Club."
+        }
+      ]
+    }
+  ],
+  "writing": {
+    "id": "writing",
+    "title": "Writing on safety & alignment",
+    "description": "My current thinking on what interpretability can tell us and how safety objectives can interact. These views are my own and subject to change.",
+    "post_slugs": [
+      "mech-interp-for-alignment",
+      "could-ai-safety-make-ai-less-safe"
+    ]
+  }
+}
