@@ -24,7 +24,7 @@
     {
       "id": "care",
       "year": 2026,
-      "title": "Do You CARE to Generalize? Extracting Robust Concept Directions from LLMs",
+      "title": "Do You CARE to Generalize? Extracting Robust Concept Directions in LLMs",
       "authors": [
         "Sweta Karlekar",
         "Claudia Shi",
@@ -37,10 +37,19 @@
       ],
       "venue": "NeurIPS 2026",
       "presentation": "Poster",
-      "publication_note": "Accepted; forthcoming",
-      "abstract": "Transformer-based large language models (LLMs) encode many high-level concepts as linear directions in the latent activation space. Once identified, these directions support both measurement, the quantification of a concept's presence, and intervention, the steering of the model's behavior. In practice, however, a direction learned from one context often fails when applied to prompts from a new context. This poor transfer can have two distinct sources: spurious correlation between the concept label and dataset-specific features, and genuine heterogeneity in how the concept is encoded across contexts. Methods from out-of-distribution (OOD) literature can address the first, but worsen the second by discarding context-specific structure that may carry concept signal. We introduce Context-Aided Representation Extraction (CARE), which bridges OOD generalization and mechanistic interpretability. Given activations labeled with a concept and an environment, CARE jointly learns a shared direction, optimized to be invariant across environments, and orthogonal environment-specific residuals that capture how the concept varies by context. We evaluate CARE on subject--verb agreement, refusal of harmful prompts, and toxicity. CARE produces directions that measure concepts more reliably under distribution shift and in unseen environments and datasets than existing methods while remaining effective for intervention. Its decomposition also supports a swap-cost diagnostic that identifies when context-specific structure carries concept-relevant signal.",
-      "links": [],
-      "abstract_source": "Provided by the author"
+      "publication_note": "To appear",
+      "abstract": "Transformer-based large language models (LLMs) encode many high-level concepts as linear directions in activation space. Such concept directions support measurement, quantifying a concept’s presence, and intervention, steering the model’s behavior. In practice, a direction learned in one context often fails in another, such as a new prompt style, source dataset, or target group. We treat these contexts as environments and cast concept-direction extraction as a multi-environment out-of-distribution (OOD) generalization problem. This framing exposes two reasons a direction can fail to transfer: it may pick up features that merely correlate with the concept in the training environments, or the concept may genuinely be encoded differently across environments. Invariance methods from the OOD literature address the first problem but not the second, since forcing a single invariant direction discards context-specific structure that can carry the concept. We introduce Context-Aided Representation Extraction (CARE), which addresses both. CARE decomposes each concept direction into a shared direction, common to all environments and optionally regularized for invariance, plus an orthogonal environment-specific residual. We evaluate CARE on subject–verb agreement, refusal of harmful prompts, and toxicity across four LLMs. Under shifts in the environment–label relationship, CARE measures concepts more accurately than standard and OOD baselines while remaining effective for intervention. The shared direction transfers to environments and datasets never seen in training, and the residuals can improve intervention when the environment is known. In a semi-synthetic study with known concept structure, CARE’s decomposition recovers the shared and context-specific components of the concept.",
+      "links": [
+        {
+          "label": "Paper",
+          "url": "https://openreview.net/forum?id=1wENYV50CW"
+        },
+        {
+          "label": "PDF",
+          "url": "/files/care_neurips_2026.pdf"
+        }
+      ],
+      "abstract_source_url": "https://openreview.net/pdf?id=1wENYV50CW"
     },
     {
       "id": "duel-evolve",
@@ -71,10 +80,6 @@
         {
           "label": "Paper",
           "url": "https://arxiv.org/abs/2602.21585"
-        },
-        {
-          "label": "PDF",
-          "url": "https://arxiv.org/pdf/2602.21585"
         },
         {
           "label": "Slides",
@@ -109,10 +114,6 @@
         {
           "label": "Paper",
           "url": "https://openreview.net/forum?id=KzH1cLVU1R"
-        },
-        {
-          "label": "PDF",
-          "url": "https://openreview.net/pdf?id=KzH1cLVU1R"
         }
       ],
       "abstract_source_url": "https://openreview.net/pdf?id=KzH1cLVU1R"
@@ -150,10 +151,6 @@
           "url": "https://arxiv.org/abs/2507.23220"
         },
         {
-          "label": "PDF",
-          "url": "https://arxiv.org/pdf/2507.23220"
-        },
-        {
           "label": "Poster",
           "url": "/files/emnlp_mtm_poster.png"
         }
@@ -181,10 +178,6 @@
         {
           "label": "Paper",
           "url": "https://proceedings.neurips.cc/paper_files/paper/2024/hash/3791f5fc0e8e43730466afd2bcdb7493-Abstract-Conference.html"
-        },
-        {
-          "label": "PDF",
-          "url": "https://proceedings.neurips.cc/paper_files/paper/2024/file/3791f5fc0e8e43730466afd2bcdb7493-Paper-Conference.pdf"
         }
       ],
       "abstract_source_url": "https://proceedings.neurips.cc/paper_files/paper/2024/hash/3791f5fc0e8e43730466afd2bcdb7493-Abstract-Conference.html"
@@ -290,6 +283,43 @@
     }
   ],
   "projects": [
+    {
+      "id": "health-research-oracle",
+      "title": "Health Research Oracle: A Source-Grounded Research Assistant for Public Health Insurance Advocates",
+      "summary": [
+        "Built for the ",
+        {
+          "text": "Community Service Society of New York",
+          "url": "https://www.cssny.org/"
+        },
+        " during Columbia’s ",
+        {
+          "text": "AI for Health Equity Design Sprint",
+          "url": "https://datascience.columbia.edu/events/ai-health-equity-design-sprint"
+        },
+        ": a research assistant that lets advocates ask plain-language questions about New York Medicaid rules and get answers they can verify. The model is treated as untrusted. It has no internet access or tools and answers only from a curated, pinned corpus; it can select only labeled passages, which Python resolves to exact character offsets so every quotation is verbatim and every citation opens the source with the passage highlighted. A harness wraps it in query-only checks that refuse requests for private records or individual conclusions, a separate LLM review pass for support, exceptions, dates, and conflicts, and fail-closed validation that withholds any answer it cannot verify. Because guidance is frequently amended, a document relationship map links sources to the amendments that reference them without assuming a newer document supersedes an older one, and a date filter supports historical questions. Runs on Amazon Bedrock (Titan embeddings, Qwen3 or Nova) or local models. We released it as a research prototype for further evaluation, with a two-command local setup for ease of access."
+      ],
+      "context": "Sweta Karlekar · Columbia AI Ethics Fellowship",
+      "credits": "Challenge brief by the Community Service Society of New York (CSSNY).",
+      "links": [
+        {
+          "label": "Code",
+          "url": "https://github.com/swkarlekar/health-research-oracle-public"
+        },
+        {
+          "label": "Video demo",
+          "url": "https://github.com/swkarlekar/health-research-oracle-public/releases/download/demo-video-2026-11-08/design_sprint_demo_video.mov"
+        },
+        {
+          "label": "Architecture notes",
+          "url": "https://github.com/swkarlekar/health-research-oracle-public/blob/main/docs/architecture.md"
+        },
+        {
+          "label": "Prompt examples",
+          "url": "https://github.com/swkarlekar/health-research-oracle-public/blob/main/docs/prompts.md"
+        }
+      ]
+    },
     {
       "id": "text-based-interventions",
       "title": "Examining the Structure of Text-Based Interventions in Large Language Models",

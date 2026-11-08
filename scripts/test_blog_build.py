@@ -460,6 +460,27 @@ class BlogBuildTests(unittest.TestCase):
         updated = json.loads((output / packager.MARKER_NAME).read_text())
         self.assertFalse(any(entry['path'].startswith('posts/') for entry in updated['files']))
 
+    def test_inline_link_segments_render_in_project_summaries_and_safety_descriptions(self):
+        sprint = 'https://datascience.columbia.edu/events/ai-health-equity-design-sprint'
+        self.build()
+        projects = (self.root / 'projects.html').read_text()
+        article = projects.split('id="health-research-oracle"')[1].split('</article>')[0]
+        self.assertEqual(article.count('<p>'), 1)
+        self.assertIn(f'<a href="{sprint}" target="_blank" rel="noopener">AI for Health Equity Design Sprint</a>', article)
+        self.assertNotIn('<span>Design sprint</span>', article)
+
+        safety = (self.root / 'ai-safety.html').read_text()
+        card = safety.split('id="ai-ethics-fellowship"')[1].split('</article></li>')[0]
+        self.assertLess(card.index('About the fellowship'), card.index('safety-work'))
+        work = card.split('aria-label="Selected research work"')[1]
+        self.assertIn('Health Research Oracle', work)
+        self.assertEqual(work.count('<p class="safety-resource-description">'), 1)
+        self.assertIn(f'<a href="{sprint}" target="_blank" rel="noopener">AI for Health Equity Design Sprint</a>', work)
+        self.assertNotIn('Design Sprint', card.split('aria-label="Selected research work"')[0])
+
+        self.assertNotIn('ai-health-equity-design-sprint" target="_blank" rel="noopener"><svg',
+                         projects + safety.split('id="ai-ethics-fellowship"')[1])
+
 
 if __name__ == '__main__':
     unittest.main()

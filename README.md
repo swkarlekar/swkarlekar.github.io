@@ -5,9 +5,9 @@ The active site uses the academic layout at the repository root. It is a small, 
 ## Editing
 
 - Edit biography details, publications, projects, talks, Chalk Talk Notes, experience, teaching, service, honors, and links in `content/site.json`. The transcription disclaimer is stored alongside `chalk_talk_notes`.
-- Talk descriptions accept plain text or a list of text and `{ "text": "link label", "url": "https://…" }` segments for inline links. The builder escapes both formats.
+- Talk descriptions accept plain text or a list of text and `{ "text": "link label", "url": "https://…" }` segments for inline links. The builder escapes both formats. Project summaries accept the same segments and may also be a list of paragraphs (each a string or a segment list); a string splits into paragraphs on blank lines. Safety timeline descriptions accept a single segment list for an inline link.
 - Set `profile.cv_url` in that file to update both CV download buttons.
-- Publication abstracts use the paper's verbatim wording. Their primary sources are recorded in `abstract_source_url`; the NeurIPS CARE abstract was supplied by the author. Keep abstracts separate from project descriptions.
+- Publication abstracts use the paper's verbatim wording. Their primary sources are recorded in `abstract_source_url`; the NeurIPS CARE abstract is the camera-ready wording supplied by the author. Keep abstracts separate from project descriptions.
 - Set `selected_publications` to the publication IDs to feature on the homepage, in display order. The Publications page retains the full list.
 - Edit page structure and introductory prose in `scripts/build_site.py`.
 - Edit appearance in `assets/css/academic.css` and optional theme/search behavior in `assets/js/academic.js`.

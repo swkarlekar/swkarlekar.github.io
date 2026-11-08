@@ -83,29 +83,33 @@
         {
           "paper_id": "care"
         }
-      ],
-      "paper_overrides": {
-        "care": {
-          "links": [
-            {
-              "label": "Google Drive link",
-              "url": "https://drive.google.com/file/d/1Kxj51zKXtQKDuouSxtZ78RuAcmaPxScJ/view?usp=sharing"
-            }
-          ],
-          "availability_note": "This is not the camera-ready version; the paper will be on arXiv soon."
-        }
-      }
+      ]
     },
     {
       "id": "ai-ethics-fellowship",
-      "date": "September 2026",
+      "date": "Fall 2026",
       "label": "Division of Ethics · Columbia University",
       "title": "Columbia AI Ethics Fellow",
-      "description": "Selected for Columbia’s AI Ethics Fellowship; joined the Fall 2026 cohort.",
+      "description": "Selected for Columbia’s AI Ethics Fellowship, organized by the Division of Ethics around the Reprogramming Governance: Ethical AI in Science and Health series.",
       "resources": [
         {
           "label": "About the fellowship",
           "url": "https://www.mhe.cuimc.columbia.edu/news/call-applications-division-ethics-ai-fellows-fall-2026"
+        }
+      ],
+      "work": [
+        {
+          "label": "Health Research Oracle",
+          "url": "https://github.com/swkarlekar/health-research-oracle-public",
+          "meta": "AI for Health Equity Design Sprint · Columbia Data Science Institute · Fall 2026",
+          "description": [
+            "As part of the fellowship, I took part in the Data Science Institute’s ",
+            {
+              "text": "AI for Health Equity Design Sprint",
+              "url": "https://datascience.columbia.edu/events/ai-health-equity-design-sprint"
+            },
+            ", building an AI research tool for a community partner, the Community Service Society of New York (CSSNY). The tool lets public health insurance advocates ask plain-language questions about New York Medicaid rules and get answers they can verify. The model is treated as untrusted: it has no internet access or tools, answers only from a curated corpus, and can select only labeled passages that Python resolves to verbatim quotations with citations. A harness adds query-only checks that refuse requests for private records or individual conclusions, a separate LLM review for support, exceptions, dates, and conflicts, and fail-closed validation. A document relationship map handles frequently amended guidance without assuming newer supersedes older, and a date filter supports historical questions. We released it as a research prototype for further evaluation, with a two-command local setup for ease of access."
+          ]
         }
       ]
     }
@@ -132,7 +136,14 @@
           "label": "Intro to Mechanistic Interpretability",
           "url": "files/intro_to_mech_interp.pdf",
           "meta": "Teaching & guest lecture",
-          "description": "Presented for Frontiers of Machine Learning while I was a TA for Carl Vondrick’s COMS 6998 class in Fall 2024, and as a guest lecture for the **Columbia AI Alignment Club**."
+          "description": [
+            "Presented for Frontiers of Machine Learning while I was a TA for Carl Vondrick’s COMS 6998 class in Fall 2024, and as a guest lecture for the ",
+            {
+              "text": "Columbia AI Alignment Club",
+              "url": "https://www.cualignment.org/"
+            },
+            "."
+          ]
         }
       ]
     }

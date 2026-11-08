@@ -57,8 +57,23 @@ def _link(label, href, css="safety-link", symbol=None):
     return f'<a class="{_h(css)}" href="{_h(href)}"{target}>{glyph}<span>{_h(label)}</span></a>'
 
 
+def _segments(value):
+    """Render one paragraph of plain strings and ``{"text", "url"}`` link segments."""
+    parts = []
+    for part in value:
+        if isinstance(part, str):
+            parts.append(_h(part))
+        else:
+            href = _url(part["url"])
+            target = ' target="_blank" rel="noopener"' if urlsplit(href).scheme else ""
+            parts.append(f'<a href="{_h(href)}"{target}>{_h(part["text"])}</a>')
+    return "".join(parts)
+
+
 def _paragraphs(value, css="", *, inline=False):
     attribute = f' class="{_h(css)}"' if css else ""
+    if isinstance(value, list):
+        return f"<p{attribute}>{_segments(value)}</p>"
     return "".join(
         f"<p{attribute}>{render_key_point(part.strip()) if inline else _h(part.strip())}</p>"
         for part in str(value).split("\n\n")
@@ -174,6 +189,10 @@ def render_safety_page(site_data, safety_data, posts):
                 f"<li>{_h(point)}</li>" for point in entry["bullets"]
             ) + "</ul>"
         resources = ""
+        if entry.get("resources"):
+            resources = '<div class="safety-inline-resources">' + "".join(
+                _resource_card(resource, level=4) for resource in entry["resources"]
+            ) + "</div>"
         if "work" in entry:
             work_rows = []
             for item in entry["work"]:
@@ -198,10 +217,6 @@ def render_safety_page(site_data, safety_data, posts):
                 + "".join(paper_rows) + "</ul>"
                 if paper_rows else ""
             )
-            if entry.get("resources"):
-                resources = '<div class="safety-inline-resources">' + "".join(
-                    _resource_card(resource, level=4) for resource in entry["resources"]
-                ) + "</div>"
         entries.append(
             '<li class="safety-entry">'
             f'<div class="safety-when"><p class="safety-date">{_h(entry["date"])}</p>{label}</div>'
@@ -209,7 +224,7 @@ def render_safety_page(site_data, safety_data, posts):
             f'aria-labelledby="safety-title-{_h(entry_id)}">'
             f'<h3 id="safety-title-{_h(entry_id)}">{_h(entry["title"])}</h3>'
             f'<div class="safety-description">{_paragraphs(entry["description"])}</div>'
-            f"{bullets}{paper_list}{resources}</article></li>"
+            f"{bullets}{resources}{paper_list}</article></li>"
         )
     cv = (
         '<section class="safety-cv" id="safety-cv" aria-labelledby="safety-cv-title">'

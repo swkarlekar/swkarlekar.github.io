@@ -39,6 +39,8 @@ def link(label, href, css="", new=False, asset_prefix=""):
     lower = label.lower()
     if href.startswith("mailto:"):
         symbol = "email"
+    elif "vimeo.com/" in href or "video" in lower:
+        symbol = "video"
     elif "linkedin.com/" in href:
         symbol = "linkedin"
     elif "github.com/" in href:
@@ -51,8 +53,6 @@ def link(label, href, css="", new=False, asset_prefix=""):
         symbol = "download"
     elif "bibtex" in lower:
         symbol = "code"
-    elif "vimeo.com/" in href or "video" in lower:
-        symbol = "video"
     elif "poster" in lower:
         symbol = "poster"
     elif "pdf" in lower:
@@ -189,10 +189,24 @@ def project_entry(project, compact=False):
     resources = "".join(link(item["label"], item["url"], "resource-link", True) for item in project["links"])
     context = f'<p class="eyebrow">{h(project["context"])}</p>' if project.get("context") else ""
     credits = f'<p class="project-credits">{h(project["credits"])}</p>' if project.get("credits") else ""
+    summary = "".join(f"<p>{inline_text(part)}</p>" for part in paragraphs(project["summary"]))
     return f'''<article class="project" id="{h(project['id'])}">
       <div class="project-marker" aria-hidden="true"><svg class="icon" viewBox="0 0 24 24"><use href="assets/icons/sprite.svg#book" width="24" height="24"></use></svg></div>
-      <div><h3>{h(project['title'])}</h3>{context}{credits}<p>{h(project['summary'])}</p><div class="resource-links">{resources}</div></div>
+      <div><h3>{h(project['title'])}</h3>{context}{credits}{summary}<div class="resource-links">{resources}</div></div>
     </article>'''
+
+
+def paragraphs(value):
+    """Split a summary into paragraphs: a string on blank lines, or a list of paragraphs.
+
+    Each paragraph is plain text or a list of text and ``{"text", "url"}`` link segments.
+    A flat list of segments is a single paragraph.
+    """
+    if isinstance(value, str):
+        return [part.strip() for part in value.split("\n\n") if part.strip()]
+    if value and all(isinstance(part, (str, dict)) for part in value):
+        return [value]
+    return list(value)
 
 
 def inline_text(value):
